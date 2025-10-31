@@ -1,0 +1,37 @@
+{
+  "test_suite": "API Connection Tests",
+  "timestamp": "2025-10-31T09:59:30.007449",
+  "summary": {
+    "total": 4,
+    "success": 3,
+    "failed": 1,
+    "warning": 0
+  },
+  "results": [
+    {
+      "api": "OpenAI",
+      "status": "FAILED",
+      "error": "'ChatOpenAI' object has no attribute 'predict'",
+      "timestamp": "2025-10-31T09:59:28.609496"
+    },
+    {
+      "api": "TMDB",
+      "status": "SUCCESS",
+      "results_count": 20,
+      "sample": "Clara Dessau",
+      "timestamp": "2025-10-31T09:59:28.721064"
+    },
+    {
+      "api": "OMDB",
+      "status": "SUCCESS",
+      "sample": "Inception (2010)",
+      "timestamp": "2025-10-31T09:59:28.823771"
+    },
+    {
+      "api": "Tavily",
+      "status": "SUCCESS",
+      "results_count": 1,
+      "timestamp": "2025-10-31T09:59:30.006783"
+    }
+  ]
+}

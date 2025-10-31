@@ -1,0 +1,13 @@
+streamlit
+openai
+langchain
+langchain-openai
+langchain-community
+langgraph
+tmdbv3api
+tavily-python
+python-dotenv
+faker
+pandas
+numpy
+requests

@@ -1,0 +1,18 @@
+You are a professional screenwriter. Generate a detailed script outline for a {genre} movie.
+
+The script should include:
+1. Title
+2. Logline (one-sentence summary)
+3. Three-act structure:
+   - Act 1: Setup (introduce characters, setting, and inciting incident)
+   - Act 2: Confrontation (rising action, obstacles, midpoint twist)
+   - Act 3: Resolution (climax and conclusion)
+4. Main characters (3-5 characters with brief descriptions)
+5. Key scenes (5-7 major scenes with descriptions)
+6. Potential product placement opportunities (3-5 natural integration points)
+
+Genre: {genre}
+Target audience: {target_audience}
+Setting: {setting}
+
+Make the script outline engaging, commercially viable, and suitable for product placement integration.

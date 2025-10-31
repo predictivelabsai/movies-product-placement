@@ -1,0 +1,44 @@
+{
+  "test_suite": "Script Generation Tests",
+  "timestamp": "2025-10-31T09:59:38.897967",
+  "summary": {
+    "total": 4,
+    "success": 3,
+    "failed": 1,
+    "warning": 0
+  },
+  "results": [
+    {
+      "test": "Prompt Template Loading",
+      "status": "SUCCESS",
+      "template_length": 740,
+      "timestamp": "2025-10-31T09:59:38.049231"
+    },
+    {
+      "test": "Script Storage",
+      "status": "SUCCESS",
+      "scripts_directory": "scripts",
+      "timestamp": "2025-10-31T09:59:38.049371"
+    },
+    {
+      "test": "Database Connection",
+      "status": "SUCCESS",
+      "tables_count": 6,
+      "tables": [
+        "scripts",
+        "sqlite_sequence",
+        "product_placements",
+        "actors",
+        "script_casting",
+        "revenue_forecasts"
+      ],
+      "timestamp": "2025-10-31T09:59:38.053072"
+    },
+    {
+      "test": "Script Generation",
+      "status": "FAILED",
+      "error": "No module named 'langchain.prompts'",
+      "timestamp": "2025-10-31T09:59:38.897788"
+    }
+  ]
+}
