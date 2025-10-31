@@ -45,6 +45,13 @@ st.markdown("""
         font-family: 'Courier New', monospace;
         margin: 1rem 0;
     }
+    .credential-box {
+        background-color: #fff3cd;
+        border: 2px solid #ffc107;
+        padding: 1rem;
+        border-radius: 5px;
+        margin: 1rem 0;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -55,6 +62,17 @@ st.markdown("""
 Welcome to the comprehensive user guide for the **Vadis Media Product Placement AI Platform**. 
 This guide will walk you through all features and functionalities of the application.
 """)
+
+# Login credentials
+st.markdown('<h2 class="section-header">🔐 Login Credentials</h2>', unsafe_allow_html=True)
+st.markdown("""
+<div class="credential-box">
+    <h3>Demo Access Credentials</h3>
+    <p><strong>Email:</strong> ai@vadis-media.com</p>
+    <p><strong>Password:</strong> movies2025</p>
+    <p><em>Use these credentials to access the platform.</em></p>
+</div>
+""", unsafe_allow_html=True)
 
 # Table of Contents
 st.markdown('<h2 class="section-header">📑 Table of Contents</h2>', unsafe_allow_html=True)
@@ -110,6 +128,10 @@ streamlit run Home.py
 ```
 
 The application will open in your browser at `http://localhost:8501`.
+
+### First Login
+
+When you first access the application, you'll see a login screen. Use the credentials provided above to sign in.
 """)
 
 # Display screenshot if available
@@ -121,31 +143,41 @@ if screenshot_path.exists():
 st.markdown('<h2 class="section-header" id="ai-script-generation">✍️ AI Script Generation</h2>', unsafe_allow_html=True)
 
 st.markdown("""
-The **AI Script Generation** feature allows you to create professional script outlines using advanced AI technology.
+The **AI Script Generation** feature allows you to create professional script outlines using advanced AI technology powered by **GPT-4.1-mini**.
 
 ### How to Use
 
-1. **Select Genre**: Choose from Action, Drama, Comedy, Thriller, Romance, Sci-Fi, Horror, or Fantasy
-2. **Enter Title**: Provide a working title for your script
-3. **Describe Plot**: Write a brief description of your story (2-3 sentences)
-4. **Set Length**: Choose between Short (5-10 pages), Medium (20-30 pages), or Feature (90-120 pages)
-5. **Add Product Placement**: Optionally specify products or brands to integrate
-6. **Generate**: Click the "Generate Script" button
+1. **Select Genre**: Choose from Thriller, Comedy, Children's Movie, Romantic Comedy, Crime, Action, Drama, Horror, or Sci-Fi
+2. **Choose Target Audience**: Select from General Audience (PG), Teen & Young Adult (PG-13), Adult (R), Family (G), or Mature (NC-17)
+3. **Enter Setting**: Provide a setting description (e.g., "Modern urban city", "Medieval castle", "Space station")
+4. **Adjust Advanced Options** (optional):
+   - **Creativity Level**: Control randomness (0.0 = focused, 1.0 = creative)
+   - **Maximum Length**: Set token limit (500-4000 tokens)
+5. **Generate**: Click the "🚀 Generate Script Outline" button
 
 ### Key Features
 
 - **75% Higher Accuracy**: AI-powered generation delivers more relevant and coherent scripts than manual methods
-- **Multiple Genres**: Support for 8 major film genres
-- **Customizable Length**: From short films to feature-length scripts
+- **Multiple Genres**: Support for 9 major film genres
+- **Customizable Prompts**: Edit the prompt template in the sidebar to customize output
 - **Natural Integration**: Product placements are woven naturally into the narrative
-- **Export Options**: Download as TXT, PDF, or DOCX
+- **Export Options**: Download as TXT format
+
+### AI Model
+
+The platform uses **GPT-4.1-mini**, which provides:
+- Fast response times (5-15 seconds)
+- High-quality script outlines
+- Natural product placement suggestions
+- Cost-effective generation
 
 ### Tips
 
-- Be specific in your plot description for better results
-- Include character details if you have specific roles in mind
-- Mention target audience or tone (e.g., "dark comedy for adults")
+- Be specific in your setting description for better results
+- Use the creativity slider to control output style
+- Save the prompt template after customization
 - Review and edit the generated script to match your vision
+- Generate multiple versions and combine the best elements
 """)
 
 screenshot_path = Path("/home/ubuntu/movies-product-placement/screenshots/02_ai_script_generation.webp")
@@ -388,10 +420,11 @@ Monitor and manage all API integrations from a centralized dashboard.
 
 ### Integrated APIs
 
-1. **OpenAI**
+1. **OpenAI (GPT-4.1-mini)**
    - Purpose: AI text generation for scripts and analysis
    - Status: Real-time connection monitoring
    - Usage: Token consumption tracking
+   - Model: gpt-4.1-mini (optimized for speed and cost)
 
 2. **TMDB (The Movie Database)**
    - Purpose: Movie database and actor information
@@ -492,6 +525,7 @@ st.markdown("""
 - Check OpenAI API key validity
 - Ensure sufficient API credits
 - Simplify plot description if too complex
+- Verify you're using supported model (gpt-4.1-mini)
 
 **Upload Issues**
 - Verify file format (TXT, PDF, DOCX only)
@@ -507,6 +541,11 @@ st.markdown("""
 - Verify API keys in .env file
 - Check API Management page for status
 - Wait and retry if service is temporarily down
+
+**Login Issues**
+- Verify credentials: ai@vadis-media.com / movies2025
+- Clear browser cache and cookies
+- Try incognito/private browsing mode
 """)
 
 # Footer
@@ -525,7 +564,8 @@ This project is licensed under the MIT License. See LICENSE file for details.
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: October 2024  
-**Platform**: Vadis Media Product Placement AI
+**Version**: 1.0.1  
+**Last Updated**: October 31, 2024  
+**Platform**: Vadis Media Product Placement AI  
+**AI Model**: GPT-4.1-mini
 """)

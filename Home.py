@@ -13,6 +13,31 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Basic login gate
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+    st.title("🎬 Vadis Media - Login")
+    st.markdown("### Please sign in to access the platform")
+    
+    with st.form("login_form"):
+        email = st.text_input("Email", placeholder="ai@vadis-media.com")
+        password = st.text_input("Password", type="password", placeholder="Enter your password")
+        submitted = st.form_submit_button("Sign in", use_container_width=True)
+    
+    if submitted:
+        if email.strip().lower() == "ai@vadis-media.com" and password == "movies2025":
+            st.session_state.authenticated = True
+            st.success("✅ Login successful! Redirecting...")
+            st.rerun()
+        else:
+            st.error("❌ Invalid credentials. Please try again.")
+    
+    st.markdown("---")
+    st.info("**Demo Credentials:**\n\nEmail: ai@vadis-media.com\n\nPassword: movies2025")
+    st.stop()
+
 # Custom CSS
 st.markdown("""
     <style>
@@ -134,6 +159,11 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### 📞 Support")
     st.markdown("[Visit Vadis Media](https://www.vadis-media.com/)")
+    
+    # Logout button
+    if st.button("🚪 Logout", use_container_width=True):
+        st.session_state.authenticated = False
+        st.rerun()
 
 # Footer
 st.markdown("---")
