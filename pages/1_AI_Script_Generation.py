@@ -148,7 +148,7 @@ if st.button("🚀 Generate Script Outline", type="primary", use_container_width
             try:
                 # Initialize LLM
                 llm = ChatOpenAI(
-                    model="gpt-4o-mini",
+                    model="gpt-4.1-mini",
                     temperature=temperature,
                     max_tokens=max_tokens
                 )
