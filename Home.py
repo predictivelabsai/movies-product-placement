@@ -22,8 +22,8 @@ if not st.session_state.authenticated:
     st.markdown("### Please sign in to access the platform")
     
     with st.form("login_form"):
-        email = st.text_input("Email", placeholder="ai@vadis-media.com")
-        password = st.text_input("Password", type="password", placeholder="Enter your password")
+        email = st.text_input("Email")
+        password = st.text_input("Password", type="password")
         submitted = st.form_submit_button("Sign in", use_container_width=True)
     
     if submitted:
@@ -33,9 +33,6 @@ if not st.session_state.authenticated:
             st.rerun()
         else:
             st.error("❌ Invalid credentials. Please try again.")
-    
-    st.markdown("---")
-    st.info("**Demo Credentials:**\n\nEmail: ai@vadis-media.com\n\nPassword: movies2025")
     st.stop()
 
 # Custom CSS

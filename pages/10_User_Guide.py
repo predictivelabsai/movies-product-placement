@@ -63,17 +63,6 @@ Welcome to the comprehensive user guide for the **Vadis Media Product Placement 
 This guide will walk you through all features and functionalities of the application.
 """)
 
-# Login credentials
-st.markdown('<h2 class="section-header">🔐 Login Credentials</h2>', unsafe_allow_html=True)
-st.markdown("""
-<div class="credential-box">
-    <h3>Demo Access Credentials</h3>
-    <p><strong>Email:</strong> ai@vadis-media.com</p>
-    <p><strong>Password:</strong> movies2025</p>
-    <p><em>Use these credentials to access the platform.</em></p>
-</div>
-""", unsafe_allow_html=True)
-
 # Table of Contents
 st.markdown('<h2 class="section-header">📑 Table of Contents</h2>', unsafe_allow_html=True)
 st.markdown("""
