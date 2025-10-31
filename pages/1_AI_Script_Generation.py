@@ -148,7 +148,7 @@ if st.button("🚀 Generate Script Outline", type="primary", use_container_width
             try:
                 # Initialize LLM
                 llm = ChatOpenAI(
-                    model="gpt-4",
+                    model="gpt-4o-mini",
                     temperature=temperature,
                     max_tokens=max_tokens
                 )
@@ -166,7 +166,9 @@ if st.button("🚀 Generate Script Outline", type="primary", use_container_width
                     setting=setting
                 )
                 
-                result = llm.predict(formatted_prompt)
+                # Use invoke instead of predict (new LangChain API)
+                response = llm.invoke(formatted_prompt)
+                result = response.content
                 
                 # Display result
                 st.success("✅ Script outline generated successfully!")
