@@ -77,7 +77,7 @@ def test_script_generation():
             template = f.read()
         
         # Initialize LLM
-        llm = ChatOpenAI(model="gpt-4", temperature=0.7, max_tokens=500)
+        llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0.7, max_tokens=500)
         
         # Create prompt
         prompt_template = PromptTemplate(
@@ -92,7 +92,8 @@ def test_script_generation():
             setting="Modern urban city"
         )
         
-        result = llm.predict(formatted_prompt)
+        response = llm.invoke(formatted_prompt)
+        result = response.content
         
         # Save test script
         os.makedirs("scripts", exist_ok=True)

@@ -209,7 +209,7 @@ with tab2:
         else:
             with st.spinner("🤖 AI is analyzing and generating recommendations..."):
                 try:
-                    llm = ChatOpenAI(model="gpt-4", temperature=0.7)
+                    llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0.7)
                     
                     prompt = f"""As a casting director, recommend 5 actors perfect for a {genre} movie targeting {country} market.
 
@@ -229,7 +229,8 @@ For each actor, provide:
 
 Format as a numbered list."""
                     
-                    result = llm.predict(prompt)
+                    response = llm.invoke(prompt)
+                    result = response.content
                     
                     st.markdown("### 🎯 AI Recommendations")
                     st.markdown(result)

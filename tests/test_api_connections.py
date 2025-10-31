@@ -26,8 +26,9 @@ def test_openai_connection():
                 "timestamp": datetime.now().isoformat()
             }
         
-        llm = ChatOpenAI(model="gpt-4", temperature=0.7, max_tokens=50)
-        result = llm.predict("Say 'API test successful' in one sentence.")
+        llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0.7, max_tokens=50)
+        response = llm.invoke("Say 'API test successful' in one sentence.")
+        result = response.content
         
         return {
             "api": "OpenAI",

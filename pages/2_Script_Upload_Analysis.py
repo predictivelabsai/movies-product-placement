@@ -130,7 +130,7 @@ if st.session_state.analyzed_script:
                 try:
                     # Initialize LLM
                     llm = ChatOpenAI(
-                        model="gpt-4",
+                        model="gpt-4.1-mini",
                         temperature=temperature,
                         max_tokens=2000
                     )
@@ -146,7 +146,8 @@ Script:
 Provide a comprehensive analysis with specific recommendations and opportunities."""
                     
                     # Generate analysis
-                    result = llm.predict(analysis_prompt)
+                    response = llm.invoke(analysis_prompt)
+                    result = response.content
                     
                     st.session_state.analysis_result = result
                     

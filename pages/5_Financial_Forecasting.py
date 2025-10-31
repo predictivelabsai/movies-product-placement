@@ -140,7 +140,7 @@ with tab1:
                 
                 # AI-powered analysis
                 if os.getenv("OPENAI_API_KEY"):
-                    llm = ChatOpenAI(model="gpt-4", temperature=0.7)
+                    llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0.7)
                     
                     prompt = f"""As a film industry financial analyst, provide a detailed revenue forecast analysis for:
 
@@ -160,7 +160,8 @@ Provide:
 
 Be specific and data-driven."""
                     
-                    ai_analysis = llm.predict(prompt)
+                    response = llm.invoke(prompt)
+                    ai_analysis = response.content
                     
                     st.markdown("### 🤖 AI Analysis")
                     st.markdown(ai_analysis)
@@ -349,7 +350,7 @@ with tab3:
         else:
             with st.spinner("Analyzing market trends..."):
                 try:
-                    llm = ChatOpenAI(model="gpt-4", temperature=0.7)
+                    llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0.7)
                     
                     prompt = f"""As a market analyst, provide insights on product placement opportunities for:
 
@@ -366,7 +367,8 @@ Provide:
 
 Be specific with examples and data points."""
                     
-                    insights = llm.predict(prompt)
+                    response = llm.invoke(prompt)
+                    insights = response.content
                     
                     st.markdown("### 🎯 Market Analysis")
                     st.markdown(insights)

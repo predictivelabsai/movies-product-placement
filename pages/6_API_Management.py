@@ -89,8 +89,9 @@ with tab1:
                     with st.spinner("Testing..."):
                         from langchain_openai import ChatOpenAI
                         
-                        llm = ChatOpenAI(model="gpt-4", temperature=0.7, max_tokens=50)
-                        result = llm.predict("Say 'OpenAI API is working!' in a creative way.")
+                        llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0.7, max_tokens=50)
+                        response = llm.invoke("Say 'OpenAI API is working!' in a creative way.")
+                        result = response.content
                         
                         st.success("✅ Connection successful!")
                         st.info(f"Response: {result}")
