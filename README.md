@@ -79,14 +79,28 @@ movies-product-placement/
 │   ├── 3_Script_Comparison.py
 │   ├── 4_AI_Casting_Match.py
 │   ├── 5_Financial_Forecasting.py
-│   └── 6_API_Management.py
+│   ├── 6_API_Management.py
+│   └── 10_User_Guide.py
+├── utils/                  # Utility modules
+│   ├── __init__.py
+│   └── db_util.py         # Database operations
 ├── prompts/                # AI prompt templates
 │   └── script_generation.txt
-├── scripts/                # Generated and uploaded scripts
+├── scripts/                # Generated and uploaded scripts (gitignored)
+├── db/                     # Database files
+│   └── vadis_media.db     # SQLite database (gitignored)
 ├── sql/                    # Database schema
 │   └── schema.sql
+├── docs/                   # Documentation
+│   ├── USER_GUIDE.md
+│   ├── DEPLOYMENT_SUMMARY.md
+│   └── presentation_content.md
 ├── tests/                  # Test files
-├── test-results/           # Test result outputs
+│   ├── test_api_connections.py
+│   ├── test_script_generation.py
+│   └── openai_test.py
+├── test-results/           # Test result outputs (gitignored)
+├── screenshots/            # Application screenshots (gitignored)
 ├── requirements.txt        # Python dependencies
 ├── .env                    # Environment variables (not in git)
 ├── .env.sample             # Environment variables template
@@ -122,7 +136,14 @@ movies-product-placement/
 
 4. **Initialize database**
    ```bash
-   sqlite3 vadis_media.db < sql/schema.sql
+   mkdir -p db
+   sqlite3 db/vadis_media.db < sql/schema.sql
+   ```
+
+   Or use the Python utility:
+   ```python
+   from utils.db_util import init_database
+   init_database()
    ```
 
 5. **Run the application**
