@@ -172,7 +172,7 @@ def test_database_connection():
     try:
         import sqlite3
         
-        db_file = "vadis_media.db"
+        db_file = "db/vadis_media.db"
         
         if not os.path.exists(db_file):
             return {
