@@ -2,6 +2,7 @@ streamlit
 openai
 langchain
 langchain-openai
+langchain-google-genai
 langchain-community
 langgraph
 tmdbv3api

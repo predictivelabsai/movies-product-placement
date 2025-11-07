@@ -42,9 +42,42 @@ with st.sidebar:
     )
     
     st.markdown("---")
-    st.markdown("### ⚙️ AI Settings")
+    st.markdown("### 🤖 AI Model Selection")
     
-    st.info("Using **Gemini 2.5 Flash** for enhanced analysis with larger context window")
+    ai_model = st.selectbox(
+        "Choose AI Model",
+        [
+            "Google Gemini 2.0 Flash (Default)",
+            "Google Gemini 2.5 Flash",
+            "OpenAI GPT-4.1 Mini",
+            "OpenAI GPT-4.1 Nano",
+            "XAI Grok 3"
+        ],
+        index=0,
+        help="Select the AI model for script analysis"
+    )
+    
+    # Map display names to model IDs
+    model_mapping = {
+        "Google Gemini 2.0 Flash (Default)": {"provider": "google", "model": "gemini-2.0-flash-exp"},
+        "Google Gemini 2.5 Flash": {"provider": "openai", "model": "gemini-2.5-flash"},
+        "OpenAI GPT-4.1 Mini": {"provider": "openai", "model": "gpt-4.1-mini"},
+        "OpenAI GPT-4.1 Nano": {"provider": "openai", "model": "gpt-4.1-nano"},
+        "XAI Grok 3": {"provider": "xai", "model": "grok-3"}
+    }
+    
+    selected_model = model_mapping[ai_model]
+    
+    # Display model info
+    if selected_model["provider"] == "google":
+        st.info(f"🔹 Using **{ai_model}** with large context window (up to 1M tokens)")
+    elif selected_model["provider"] == "openai":
+        st.info(f"🔹 Using **{ai_model}** with advanced reasoning capabilities")
+    elif selected_model["provider"] == "xai":
+        st.info(f"🔹 Using **{ai_model}** with real-time knowledge")
+    
+    st.markdown("---")
+    st.markdown("### ⚙️ AI Settings")
     
     temperature = st.slider(
         "Analysis Creativity",
@@ -217,18 +250,46 @@ if st.session_state.analyzed_script:
     
     st.markdown("---")
     
-    if st.button("🚀 Analyze Script with Gemini 2.5 Flash", type="primary", use_container_width=True):
-        if not os.getenv("OPENAI_API_KEY"):
+    if st.button(f"🚀 Analyze Script with {ai_model}", type="primary", use_container_width=True):
+        # Check for appropriate API key based on provider
+        api_key_missing = False
+        if selected_model["provider"] == "google" and not os.getenv("GOOGLE_API_KEY"):
+            st.error("❌ Google API key not found. Please configure your .env file.")
+            api_key_missing = True
+        elif selected_model["provider"] == "openai" and not os.getenv("OPENAI_API_KEY"):
             st.error("❌ OpenAI API key not found. Please configure your .env file.")
-        else:
-            with st.spinner("🔍 Analyzing script with Gemini 2.5 Flash... This may take a moment due to the comprehensive analysis."):
+            api_key_missing = True
+        elif selected_model["provider"] == "xai" and not os.getenv("XAI_API_KEY"):
+            st.error("❌ XAI API key not found. Please configure your .env file.")
+            api_key_missing = True
+        
+        if not api_key_missing:
+            with st.spinner(f"🔍 Analyzing script with {ai_model}... This may take a moment due to the comprehensive analysis."):
                 try:
-                    # Initialize LLM with Gemini 2.5 Flash
-                    llm = ChatOpenAI(
-                        model="gemini-2.5-flash",
-                        temperature=temperature,
-                        max_tokens=4000  # Larger token limit for comprehensive analysis
-                    )
+                    # Initialize LLM based on provider
+                    if selected_model["provider"] == "google":
+                        from langchain_google_genai import ChatGoogleGenerativeAI
+                        llm = ChatGoogleGenerativeAI(
+                            model=selected_model["model"],
+                            google_api_key=os.getenv("GOOGLE_API_KEY"),
+                            temperature=temperature,
+                            max_output_tokens=4000
+                        )
+                    elif selected_model["provider"] == "openai":
+                        llm = ChatOpenAI(
+                            model=selected_model["model"],
+                            api_key=os.getenv("OPENAI_API_KEY"),
+                            temperature=temperature,
+                            max_tokens=4000
+                        )
+                    elif selected_model["provider"] == "xai":
+                        llm = ChatOpenAI(
+                            model=selected_model["model"],
+                            api_key=os.getenv("XAI_API_KEY"),
+                            base_url="https://api.x.ai/v1",
+                            temperature=temperature,
+                            max_tokens=4000
+                        )
                     
                     # Create comprehensive analysis prompt
                     analysis_prompt = f"""You are an expert screenplay analyst specializing in product placement opportunities and market analysis.
