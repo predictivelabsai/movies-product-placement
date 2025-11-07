@@ -200,6 +200,21 @@ if st.session_state.analyzed_script:
     with col2:
         st.metric("Total Characters", f"{char_count:,}")
     
+    # Preview pane before analysis
+    with st.expander("📖 Preview Script Content", expanded=False):
+        st.markdown("**Full Script Preview**")
+        st.text_area(
+            "Script Content",
+            st.session_state.analyzed_script,
+            height=400,
+            disabled=True,
+            label_visibility="collapsed"
+        )
+        
+        # Show first 1000 characters as quick preview
+        st.markdown("**Quick Preview (First 1000 characters):**")
+        st.info(st.session_state.analyzed_script[:1000])
+    
     st.markdown("---")
     
     if st.button("🚀 Analyze Script with Gemini 2.5 Flash", type="primary", use_container_width=True):
