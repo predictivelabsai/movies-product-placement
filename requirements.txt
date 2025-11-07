@@ -11,3 +11,5 @@ faker
 pandas
 numpy
 requests
+PyPDF2
+pdfplumber

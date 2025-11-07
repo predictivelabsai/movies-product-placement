@@ -2,6 +2,12 @@
 Utilities package for Vadis Media Product Placement Platform
 """
 
+from .pdf_script_extractor import (
+    PDFScriptExtractor,
+    extract_pdf_text,
+    extract_pdf_text_simple
+)
+
 from .db_util import (
     get_connection,
     init_database,
@@ -24,6 +30,9 @@ from .db_util import (
 )
 
 __all__ = [
+    'PDFScriptExtractor',
+    'extract_pdf_text',
+    'extract_pdf_text_simple',
     'get_connection',
     'init_database',
     'create_script',
