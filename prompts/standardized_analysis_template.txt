@@ -1,0 +1,189 @@
+## EXPERT SCREENPLAY ANALYSIS: {SCRIPT_TITLE}
+
+As an expert screenplay analyst specializing in brand integration and market valuation, analyze this screenplay excerpt and provide a comprehensive, structured analysis.
+
+---
+
+## 1. PRODUCT PLACEMENT OPPORTUNITIES (5-7 Specific Integrations)
+
+Provide a detailed table with the following columns:
+
+| # | Scene/Moment Description | Product Category | Recommended Brand Synergy | Integration Strategy |
+| :--- | :--- | :--- | :--- | :--- |
+| **1** | [Specific scene reference with location/time] | [Product category] | [2-3 specific brand names] | [How to integrate naturally - visibility, context, association] |
+| **2** | [Scene reference] | [Category] | [Brands] | [Integration approach] |
+| **3** | [Scene reference] | [Category] | [Brands] | [Integration approach] |
+| **4** | [Scene reference] | [Category] | [Brands] | [Integration approach] |
+| **5** | [Scene reference] | [Category] | [Brands] | [Integration approach] |
+| **6** | [Scene reference] | [Category] | [Brands] | [Integration approach] |
+| **7** | [Scene reference] | [Category] | [Brands] | [Integration approach] |
+
+**Requirements:**
+- Each opportunity must reference a specific scene with location/time
+- Product categories should be clear and marketable
+- Recommend 2-3 specific, real brand names per opportunity
+- Integration strategy must explain natural placement approach
+- Focus on high-visibility, organic integration moments
+
+---
+
+## 2. MARKET POTENTIAL
+
+### Commercial Appeal
+
+Provide a market tier rating and justification:
+
+**Market Tier:** [A-Tier / B-Tier / C-Tier] ([Brief rating justification])
+
+### Target Demographics
+
+**Primary Audience:**
+- Age Range: [Specific age range]
+- Gender: [Male / Female / All]
+- Interests: [Key interest areas]
+- Psychographics: [Lifestyle, values, behaviors]
+
+**Secondary Audience:**
+- [Additional demographic segments]
+
+### Revenue Potential
+
+**Box Office Projection:** [Estimated range based on genre, cast, budget]
+
+**Product Placement Value:**
+- Premium Placement: $[Range] per integration
+- Standard Placement: $[Range] per integration
+- Total Potential: $[Estimated total revenue from all placements]
+
+**ROI Factors:**
+- [Key factors affecting return on investment]
+
+---
+
+## 3. CHARACTER ANALYSIS
+
+Provide a structured table of main characters:
+
+| Character Name | Role/Archetype | Lifestyle/Preferences | Product Affinity | Key Scenes |
+| :--- | :--- | :--- | :--- | :--- |
+| [Name] | [Role in story] | [Lifestyle details, preferences, socioeconomic status] | [Types of products they would naturally use] | [Key scenes featuring this character] |
+| [Name] | [Role] | [Lifestyle] | [Product affinity] | [Scenes] |
+| [Name] | [Role] | [Lifestyle] | [Product affinity] | [Scenes] |
+
+**Character Insights:**
+- [Additional observations about character-product fit]
+- [Notes on character development opportunities]
+
+---
+
+## 4. SCENE BREAKDOWN
+
+Identify 5-7 key scenes with high product placement potential:
+
+### Scene 1: [Scene Title/Location]
+- **Timing:** [When in the script]
+- **Setting:** [Detailed location description]
+- **Action:** [What happens]
+- **Placement Opportunities:** [Specific products that fit naturally]
+- **Visibility:** [High / Medium / Low]
+- **Integration Approach:** [How to place products]
+
+### Scene 2: [Scene Title/Location]
+[Same structure as above]
+
+### Scene 3: [Scene Title/Location]
+[Same structure as above]
+
+[Continue for 5-7 scenes total]
+
+---
+
+## 5. GENRE-SPECIFIC RECOMMENDATIONS
+
+**Genre:** [Primary genre(s)]
+
+**Genre Conventions:**
+- [Key conventions that affect product placement]
+- [Audience expectations]
+- [Typical product categories for this genre]
+
+**Recommended Product Categories:**
+1. **[Category 1]:** [Why this category fits the genre]
+2. **[Category 2]:** [Justification]
+3. **[Category 3]:** [Justification]
+4. **[Category 4]:** [Justification]
+5. **[Category 5]:** [Justification]
+
+---
+
+## 6. COMPETITIVE ANALYSIS
+
+**Similar Films:**
+- [Film 1]: [Product placements used, effectiveness]
+- [Film 2]: [Product placements used, effectiveness]
+- [Film 3]: [Product placements used, effectiveness]
+
+**Lessons Learned:**
+- [What worked in similar films]
+- [What to avoid]
+- [Opportunities to differentiate]
+
+---
+
+## 7. ACTIONABLE RECOMMENDATIONS
+
+### Immediate Actions
+1. **[Action 1]:** [Specific recommendation with timeline]
+2. **[Action 2]:** [Recommendation]
+3. **[Action 3]:** [Recommendation]
+
+### Partnership Strategy
+- **Tier 1 Brands (Premium):** [List of top-tier brands to approach]
+- **Tier 2 Brands (Standard):** [List of mid-tier brands]
+- **Tier 3 Brands (Emerging):** [List of emerging brands]
+
+### Integration Timeline
+- **Pre-Production:** [What to secure before filming]
+- **Production:** [What to coordinate during filming]
+- **Post-Production:** [Digital integration opportunities]
+
+### Success Metrics
+- **Visibility KPIs:** [How to measure placement visibility]
+- **Brand Recall:** [Expected recall rates]
+- **ROI Targets:** [Financial success metrics]
+
+---
+
+## 8. RISK ASSESSMENT
+
+### Potential Challenges
+1. **[Challenge 1]:** [Description and mitigation strategy]
+2. **[Challenge 2]:** [Description and mitigation]
+3. **[Challenge 3]:** [Description and mitigation]
+
+### Brand Safety Considerations
+- [Content rating implications]
+- [Controversial themes or scenes]
+- [Brand alignment risks]
+
+---
+
+## SUMMARY
+
+**Overall Assessment:** [Brief 2-3 sentence summary of the screenplay's product placement potential]
+
+**Top 3 Opportunities:**
+1. [Most valuable placement opportunity]
+2. [Second most valuable]
+3. [Third most valuable]
+
+**Recommended Next Steps:**
+1. [Immediate action]
+2. [Short-term action]
+3. [Long-term strategy]
+
+---
+
+**Analysis Completed:** [Date/Time]
+**Analyst:** AI-Powered Screenplay Analysis System
+**Confidence Level:** [High / Medium / Low] based on script excerpt completeness

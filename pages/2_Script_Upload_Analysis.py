@@ -291,22 +291,116 @@ if st.session_state.analyzed_script:
                             max_tokens=4000
                         )
                     
-                    # Create comprehensive analysis prompt
-                    analysis_prompt = f"""You are an expert screenplay analyst specializing in product placement opportunities and market analysis.
+                    # Load standardized analysis template
+                    template_path = "prompts/standardized_analysis_template.txt"
+                    if os.path.exists(template_path):
+                        with open(template_path, 'r') as f:
+                            analysis_template = f.read()
+                    else:
+                        # Fallback template if file doesn't exist
+                        analysis_template = """## EXPERT SCREENPLAY ANALYSIS: {SCRIPT_TITLE}
 
-Analyze the following movie script and provide a detailed, structured analysis covering:
+As an expert screenplay analyst specializing in brand integration and market valuation, analyze this screenplay excerpt and provide a comprehensive, structured analysis.
 
-{', '.join(analysis_type)}
+---
 
-For each analysis type, provide:
-1. Specific examples from the script
-2. Actionable recommendations
-3. Estimated value or impact where applicable
+## 1. PRODUCT PLACEMENT OPPORTUNITIES (5-7 Specific Integrations)
 
-Script (truncated to fit context window):
+Provide a detailed table with the following columns:
+
+| # | Scene/Moment Description | Product Category | Recommended Brand Synergy | Integration Strategy |
+| :--- | :--- | :--- | :--- | :--- |
+
+[Create 5-7 rows with specific, actionable product placement opportunities]
+
+---
+
+## 2. MARKET POTENTIAL
+
+### Commercial Appeal
+**Market Tier:** [A-Tier / B-Tier / C-Tier]
+
+### Target Demographics
+**Primary Audience:** [Details]
+**Secondary Audience:** [Details]
+
+### Revenue Potential
+**Box Office Projection:** [Estimate]
+**Product Placement Value:** [Estimate]
+
+---
+
+## 3. CHARACTER ANALYSIS
+
+| Character Name | Role/Archetype | Lifestyle/Preferences | Product Affinity | Key Scenes |
+| :--- | :--- | :--- | :--- | :--- |
+
+[Analyze main characters]
+
+---
+
+## 4. SCENE BREAKDOWN
+
+[Identify 5-7 key scenes with high product placement potential]
+
+---
+
+## 5. GENRE-SPECIFIC RECOMMENDATIONS
+
+**Genre:** [Primary genre]
+**Recommended Product Categories:** [List with justifications]
+
+---
+
+## 6. COMPETITIVE ANALYSIS
+
+**Similar Films:** [Examples with product placement analysis]
+
+---
+
+## 7. ACTIONABLE RECOMMENDATIONS
+
+### Immediate Actions
+### Partnership Strategy
+### Integration Timeline
+### Success Metrics
+
+---
+
+## 8. RISK ASSESSMENT
+
+### Potential Challenges
+### Brand Safety Considerations
+
+---
+
+## SUMMARY
+
+**Overall Assessment:** [Brief summary]
+**Top 3 Opportunities:** [List]
+**Recommended Next Steps:** [List]"""
+                    
+                    # Get script title from filename
+                    script_title = st.session_state.current_script_name.replace('.pdf', '').replace('_', ' ') if st.session_state.current_script_name else "Unknown Script"
+                    
+                    # Create analysis prompt with standardized format
+                    analysis_prompt = f"""{analysis_template.replace('{SCRIPT_TITLE}', script_title)}
+
+---
+
+## SCREENPLAY EXCERPT TO ANALYZE:
+
 {st.session_state.analyzed_script[:15000]}
 
-Provide a comprehensive, well-structured analysis with clear sections and bullet points."""
+---
+
+**IMPORTANT INSTRUCTIONS:**
+- Follow the exact structure provided above
+- Use markdown tables for all structured data
+- Provide specific, actionable recommendations
+- Include real brand names where appropriate
+- Ensure all sections are comprehensive and detailed
+- Focus on data consistency and professional formatting"""
                     
                     # Generate analysis
                     response = llm.invoke(analysis_prompt)
