@@ -80,7 +80,7 @@ with st.sidebar:
     st.markdown("### ⚙️ AI Settings")
     
     temperature = st.slider(
-        "Analysis Creativity",
+        "Analysis Creativity (LLM temperature)",
         min_value=0.0,
         max_value=1.0,
         value=0.5,

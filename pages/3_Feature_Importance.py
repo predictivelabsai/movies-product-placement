@@ -5,9 +5,8 @@ from dotenv import load_dotenv
 import requests
 import pandas as pd
 import numpy as np
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
 import plotly.express as px
+from utils.regression_util import run_random_forest_importance
 
 # Load environment variables
 load_dotenv()
@@ -50,10 +49,7 @@ with st.sidebar:
     min_vote_count = st.number_input("Min TMDb vote_count", min_value=0, value=100, step=50)
 
     st.markdown("---")
-    st.markdown("### ⚙️ Model Settings")
-    n_estimators = st.slider("RandomForest Trees", min_value=100, max_value=1000, value=400, step=50)
-    max_depth = st.slider("Max Depth", min_value=3, max_value=30, value=12, step=1)
-    test_size = st.slider("Test Size", min_value=0.1, max_value=0.4, value=0.2, step=0.05)
+    # Model settings are intentionally hidden for simplicity; defaults are used in the backend utility.
 
 @st.cache_data(show_spinner=False)
 def fetch_tmdb_genres(api_key: str) -> dict:
@@ -215,27 +211,12 @@ st.markdown("## 2) 🧠 Run Analysis (RandomForest)")
 if st.button("🚀 Train Model", type="primary", use_container_width=True, disabled=st.session_state.movies_df is None or st.session_state.movies_df.empty):
     df = st.session_state.movies_df.copy()
     try:
-        # Build features
-        base_cols = ["runtime", "vote_average", "vote_count", "popularity", "budget", "release_year", "cast_popularity_top3", "director_popularity"]
-        cat_cols = ["region", "original_language", "primary_genre"]
-        # Genre multihot (avoid fillna([]) which is invalid in pandas; normalize to lists)
-        genre_lists = df["genres"].apply(lambda x: x if isinstance(x, list) else [])
-        genre_set = sorted({g for gs in genre_lists for g in gs})
-        for g in genre_set:
-            df[f"genre_{g}"] = genre_lists.apply(lambda gs, gg=g: 1 if gg in gs else 0)
-        X = df[base_cols + cat_cols + [c for c in df.columns if c.startswith("genre_")]].copy()
-        X = pd.get_dummies(X, columns=cat_cols, dummy_na=True)
-        y = df["box_office"].astype(float)
-        # Train/test
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
-        model = RandomForestRegressor(n_estimators=n_estimators, max_depth=max_depth, random_state=42, n_jobs=-1)
         with st.spinner("Training RandomForest..."):
-            model.fit(X_train, y_train)
-        feature_importances = pd.Series(model.feature_importances_, index=X.columns).sort_values(ascending=False)
-        st.session_state.feature_importances_ = feature_importances
-        st.session_state.feature_columns_ = list(X.columns)
+            result = run_random_forest_importance(df)
+        st.session_state.feature_importances_ = result["feature_importances"]
+        st.session_state.feature_columns_ = result["feature_columns"]
         st.success("✅ Model trained. Feature importances computed.")
-        st.markdown(f"R² (train): {model.score(X_train, y_train):.3f} — R² (test): {model.score(X_test, y_test):.3f}")
+        st.markdown(f"R² (train): {result['r2_train']:.3f} — R² (test): {result['r2_test']:.3f}")
     except Exception as e:
         st.error(f"❌ Training error: {str(e)}")
 
@@ -252,6 +233,25 @@ if st.session_state.feature_importances_ is not None:
         title="Top Feature Importances"
     )
     st.plotly_chart(fig, use_container_width=True)
+    with st.expander("📘 Methodology: How to interpret feature importance"):
+        st.markdown("""
+        - **Model**: We train a RandomForestRegressor on engineered features:
+          - Numeric: runtime, vote_average, vote_count, popularity, budget, release_year, cast_popularity_top3, director_popularity
+          - Categorical: region, original_language, primary_genre (one‑hot encoded)
+          - Genres: multi‑hot columns per genre (e.g., `genre_Action`)
+        - **Importance Metric**: Bars show impurity‑based feature importance (mean decrease in variance) aggregated across trees.
+        - **Interpretation**:
+          - Higher bars suggest stronger association with box office variance in this dataset.
+          - Importances are relative and do not imply causation.
+          - Groups of correlated features can split importance among themselves.
+        - **Caveats**:
+          - One‑hot and multi‑hot features appear as separate columns; consider summing related columns (e.g., all `genre_*`) for a category‑level view.
+          - If many features are highly correlated (e.g., popularity and votes), importances may be diluted across them.
+          - Impurity importances can be biased toward high‑cardinality features; consider permutation importance for confirmatory analysis.
+        - **Recommendations**:
+          - Use this graph to shortlist drivers, then validate with permutation tests or simpler models.
+          - Inspect top features and cross‑check in the treemap to see how effects aggregate across Region → Genre → Title.
+        """)
 else:
     st.info("Train the model to view feature importances.")
 

@@ -1,12 +1,14 @@
 import streamlit as st
 import os
 import sys
+import re
 from datetime import datetime
 from difflib import HtmlDiff, unified_diff
 from dotenv import load_dotenv
 from utils.langchain_util import compare_scripts, generate_modified_script
 import pandas as pd
 import json
+from typing import Dict
 
 # Make utils importable
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -40,33 +42,27 @@ if 'compare_ready' not in st.session_state:
     st.session_state.compare_ready = False
 if 'json_changes' not in st.session_state:
     st.session_state.json_changes = None
+if 'original_script_name' not in st.session_state:
+    st.session_state.original_script_name = None
 
 # Sidebar
 with st.sidebar:
     st.markdown("### 🎨 Comparison Settings")
     
-    comparison_mode = st.radio(
-        "Comparison View",
-        ["Side-by-Side", "Unified Diff", "Inline Diff"],
-        help="Choose how to display the comparison"
-    )
-    
-    show_line_numbers = st.checkbox("Show Line Numbers", value=True)
-    
-    highlight_changes = st.checkbox("Highlight Changes", value=True)
+    st.caption("Comparison view defaults to Inline Diff for readability.")
     
     st.markdown("---")
-    st.markdown("### ⚙️ AI Settings")
+    st.markdown("### ⚙️ AI Settings (for Script Generation only)")
     temperature = st.slider(
-        "Analysis Creativity",
+        "Analysis Creativity (LLM temperature)",
         min_value=0.0,
         max_value=1.0,
         value=0.5,
         step=0.1,
-        help="Lower values = more focused, Higher values = more creative"
+        help="Lower values = more focused, Higher values = more creative. Only used when generating modified scripts."
     )
     st.markdown("---")
-    st.markdown("### 🤖 AI Model Selection")
+    st.markdown("### 🤖 AI Model Selection (for Script Generation only)")
     ai_model = st.selectbox(
         "Choose AI Model",
         [
@@ -77,7 +73,7 @@ with st.sidebar:
             "XAI Grok 3"
         ],
         index=0,
-        help="Select the AI model for generation and comparison"
+        help="Select the AI model for generating modified scripts. Comparison uses pure text diff (no LLM)."
     )
     model_mapping = {
         "Google Gemini 2.0 Flash (Default)": {"provider": "google", "model": "gemini-2.0-flash-exp"},
@@ -149,6 +145,13 @@ with col1:
                 if st.button("📊 Load as Original", key="load_uploaded_original", type="primary"):
                     st.session_state.original_script = result.get('text', '')
                     st.session_state.compare_ready = False
+                    # Extract clean script name (remove timestamp and "original_" prefix if present)
+                    base_name = os.path.splitext(uploaded_original_pdf.name)[0]
+                    # Remove timestamp prefix pattern: YYYYMMDD_HHMMSS_original_
+                    clean_name = re.sub(r'^\d{8}_\d{6}_original_', '', base_name)
+                    clean_name = re.sub(r'^original_', '', clean_name)
+                    # Replace underscores with spaces for readability
+                    st.session_state.original_script_name = clean_name.replace('_', ' ')
                     st.success("✅ Original script loaded from uploaded PDF")
                     st.rerun()
             else:
@@ -183,6 +186,13 @@ with col1:
                         st.session_state.original_script = f.read()
                 
                 st.success(f"✅ Loaded: {original_file}")
+                # Extract clean script name (remove timestamp and "original_" prefix if present)
+                base_name = os.path.splitext(original_file)[0]
+                # Remove timestamp prefix pattern: YYYYMMDD_HHMMSS_original_
+                clean_name = re.sub(r'^\d{8}_\d{6}_original_', '', base_name)
+                clean_name = re.sub(r'^original_', '', clean_name)
+                # Replace underscores with spaces for readability
+                st.session_state.original_script_name = clean_name.replace('_', ' ')
                 st.session_state.compare_ready = False
                 
                 with st.expander("📖 Preview Original"):
@@ -196,20 +206,7 @@ with col1:
         else:
             st.info("No scripts available. Generate scripts first.")
     
-    # Manual input option
-    with st.expander("✏️ Or Paste Original Script"):
-        manual_original = st.text_area(
-            "Paste original script here",
-            height=200,
-            key="manual_original"
-        )
-        
-        if st.button("Load Manual Original", key="load_manual_original"):
-            if manual_original:
-                st.session_state.original_script = manual_original
-                st.session_state.compare_ready = False
-                st.success("✅ Original script loaded from manual input")
-                st.rerun()
+    # Manual paste removed by request; upload PDF or select existing files instead.
 
 with col2:
     st.markdown("### Generation Options")
@@ -271,9 +268,13 @@ with gen_col1:
                 st.session_state.modified_script = result
                 st.session_state.compare_ready = False
                 st.success("✅ Modified script generated!")
-                # Save to scripts
+                # Save to scripts (keep original document name when possible)
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                filename = f"scripts/{timestamp}_modified_generated.txt"
+                base_name = st.session_state.original_script_name or "modified"
+                # Sanitize filename: replace spaces with underscores, remove special chars
+                safe_name = re.sub(r'[^\w\s-]', '', base_name).strip()
+                safe_name = re.sub(r'[-\s]+', '_', safe_name)
+                filename = f"scripts/{timestamp}_modified_{safe_name}.txt"
                 with open(filename, 'w') as f:
                     f.write(result)
                 st.info(f"💾 Saved as: `{filename}`")
@@ -319,153 +320,181 @@ with st.expander("📥 Or Upload Existing Modified (PDF)"):
         else:
             st.error(f"❌ Failed to extract text: {result.get('error')}")
 
+def generate_json_deltas(original: str, modified: str) -> Dict:
+    """
+    Generate JSON deltas from text diff (no LLM, pure formatting).
+    Uses difflib to find changes and formats them as structured JSON.
+    """
+    import difflib
+    original_lines = original.splitlines()
+    modified_lines = modified.splitlines()
+    
+    sm = difflib.SequenceMatcher(None, original_lines, modified_lines)
+    changes = []
+    
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag in ('replace', 'insert', 'delete'):
+            # Get context around the change
+            orig_context_start = max(0, i1 - 2)
+            orig_context_end = min(len(original_lines), i2 + 2)
+            mod_context_start = max(0, j1 - 2)
+            mod_context_end = min(len(modified_lines), j2 + 2)
+            
+            orig_excerpt = '\n'.join(original_lines[orig_context_start:orig_context_end])
+            mod_excerpt = '\n'.join(modified_lines[mod_context_start:mod_context_end])
+            
+            # Try to detect product mentions (simple keyword detection)
+            product_keywords = ['iphone', 'samsung', 'apple', 'nike', 'adidas', 'coca-cola', 'pepsi', 
+                              'starbucks', 'mcdonalds', 'toyota', 'honda', 'ford', 'bmw', 'mercedes',
+                              'sony', 'lg', 'dell', 'hp', 'microsoft', 'google', 'amazon', 'netflix']
+            products_found = []
+            mod_lower = mod_excerpt.lower()
+            for kw in product_keywords:
+                if kw in mod_lower and kw not in orig_excerpt.lower():
+                    products_found.append(kw.title())
+            
+            # Detect camera/cinematography keywords
+            camera_keywords = ['camera', 'shot', 'angle', 'close-up', 'wide', 'zoom', 'pan', 'tilt',
+                             'track', 'dolly', 'crane', 'focus', 'rack focus', 'framing', 'composition']
+            camera_found = []
+            for kw in camera_keywords:
+                if kw in mod_lower and kw not in orig_excerpt.lower():
+                    camera_found.append(kw)
+            
+            change_type = 'product_placement' if products_found else ('cinematography' if camera_found else 'text_change')
+            
+            changes.append({
+                "id": len(changes) + 1,
+                "type": change_type,
+                "sceneHint": f"Lines {i1}-{i2} → {j1}-{j2}",
+                "originalExcerpt": orig_excerpt,
+                "modifiedExcerpt": mod_excerpt,
+                "productMentions": products_found,
+                "cinematographyNotes": camera_found,
+                "confidence": "high" if (products_found or camera_found) else "medium"
+            })
+    
+    return {
+        "summary": {
+            "newPlacementsCount": sum(1 for c in changes if c["type"] == "product_placement"),
+            "cinematographyChangesCount": sum(1 for c in changes if c["type"] == "cinematography"),
+            "totalChanges": len(changes)
+        },
+        "changes": changes
+    }
+
 st.markdown("---")
 st.markdown("## 3) 🧮 Compare & Navigate Changes")
 compare_disabled = not (st.session_state.original_script and st.session_state.modified_script)
-if st.button("🔎 Compare Now", type="primary", use_container_width=True, disabled=compare_disabled):
-    st.session_state.compare_ready = True
-    st.success("✅ Comparison ready below.")
+if st.button("🔎 Compare", type="primary", use_container_width=True, disabled=compare_disabled):
+    # Generate JSON deltas automatically (no LLM, pure diff)
+    try:
+        with st.spinner("🔎 Comparing scripts..."):
+            js = generate_json_deltas(
+                st.session_state.original_script,
+                st.session_state.modified_script
+            )
+        st.session_state.json_changes = js
+        st.session_state.compare_ready = True
+        st.success("✅ Comparison complete!")
+        st.rerun()
+    except Exception as e:
+        st.error(f"❌ Error during comparison: {str(e)}")
 
 if st.session_state.compare_ready and st.session_state.original_script and st.session_state.modified_script:
     # Structured JSON changes (primary view)
-    st.markdown("## 🔍 Structured JSON Changes")
-    col_json_btn, col_json_view = st.columns([1, 3])
-    with col_json_btn:
-        if st.button("🧠 Generate JSON Changes", type="primary", use_container_width=True):
-            # Provider key checks
-            api_key_missing = False
-            if selected_model["provider"] == "google" and not os.getenv("GOOGLE_API_KEY"):
-                st.error("❌ Google API key not found. Please configure your .env file.")
-                api_key_missing = True
-            elif selected_model["provider"] == "openai" and not os.getenv("OPENAI_API_KEY"):
-                st.error("❌ OpenAI API key not found. Please configure your .env file.")
-                api_key_missing = True
-            elif selected_model["provider"] == "xai" and not os.getenv("XAI_API_KEY"):
-                st.error("❌ XAI API key not found. Please configure your .env file.")
-                api_key_missing = True
-            if not api_key_missing:
-                # Load JSON template
-                json_tpl_md = "prompts/script_comparison_json_template.md"
-                json_tpl_txt = "prompts/script_comparison_json_template.txt"
-                if os.path.exists(json_tpl_md):
-                    with open(json_tpl_md, "r") as f:
-                        json_template = f.read()
-                elif os.path.exists(json_tpl_txt):
-                    with open(json_tpl_txt, "r") as f:
-                        json_template = f.read()
-                else:
-                    json_template = "{ \"summary\": {\"newPlacementsCount\": 0, \"cinematographyChangesCount\": 0}, \"changes\": [] }"
-                from utils.langchain_util import compare_scripts_json
-                try:
-                    with st.spinner("🔎 Generating structured changes..."):
-                        js = compare_scripts_json(
-                            original_script=st.session_state.original_script,
-                            modified_script=st.session_state.modified_script,
-                            template_text=json_template,
-                            provider=selected_model["provider"],
-                            model=selected_model["model"],
-                            temperature=max(0.0, min(temperature, 0.5)),
-                            max_tokens=1800
-                        )
-                    st.session_state.json_changes = js
-                    st.success("✅ JSON changes generated.")
-                except Exception as e:
-                    st.error(f"❌ Failed to generate or parse JSON changes: {str(e)}")
-    with col_json_view:
-        if st.session_state.json_changes:
-            js = st.session_state.json_changes
-            st.markdown(f"**New Placements:** {js.get('summary',{}).get('newPlacementsCount','?')} | **Cinematography Changes:** {js.get('summary',{}).get('cinematographyChangesCount','?')}")
-            rows = js.get("changes", [])
-            if rows:
-                df = pd.DataFrame([{
-                    "id": r.get("id"),
-                    "type": r.get("type"),
-                    "sceneHint": r.get("sceneHint"),
-                    "productMentions": ", ".join(r.get("productMentions", []) or []),
-                    "cinematographyNotes": ", ".join(r.get("cinematographyNotes", []) or []),
-                    "confidence": r.get("confidence")
-                } for r in rows])
-                st.dataframe(df, use_container_width=True)
-                ids = ["Select..."] + [r.get("id") for r in rows if r.get("id")]
-                sel = st.selectbox("Inspect change", ids)
-                if sel != "Select...":
-                    r = next((x for x in rows if x.get("id") == sel), None)
-                    if r:
-                        st.markdown(f"#### Change {r.get('id')} • {r.get('type')} • {r.get('sceneHint')}")
-                        c1, c2 = st.columns(2)
-                        with c1:
-                            st.markdown("**Original Excerpt**")
-                            st.text_area("orig", r.get("originalExcerpt",""), height=200, disabled=True, label_visibility="collapsed", key=f"orig_json_{sel}")
-                        with c2:
-                            st.markdown("**Modified Excerpt**")
-                            st.text_area("mod", r.get("modifiedExcerpt",""), height=200, disabled=True, label_visibility="collapsed", key=f"mod_json_{sel}")
-                        st.caption(f"Products: {', '.join(r.get('productMentions',[]) or [])} | Camera: {', '.join(r.get('cinematographyNotes',[]) or [])} | Confidence: {r.get('confidence')}")
-                st.download_button(
-                    "⬇️ Download JSON",
-                    data=json.dumps(st.session_state.json_changes),
-                    file_name="script_changes.json",
-                    mime="application/json"
-                )
-            else:
-                st.info("No structured changes found.")
+    st.markdown("## 🔍 Side-by-Side JSON Delta Comparison")
+    
+    if st.session_state.json_changes:
+        js = st.session_state.json_changes
+        summary = js.get('summary', {})
+        st.markdown(f"**Summary:** {summary.get('newPlacementsCount', '?')} new placements | {summary.get('cinematographyChangesCount', '?')} cinematography changes")
+        
+        rows = js.get("changes", [])
+        if rows:
+            # Side-by-side JSON delta view
+            st.markdown("### 📊 Delta Changes Only")
+            for idx, r in enumerate(rows):
+                with st.expander(f"Change {r.get('id', idx+1)}: {r.get('type', 'Unknown')} - {r.get('sceneHint', 'N/A')}", expanded=(idx == 0)):
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.markdown("**📄 Original Excerpt**")
+                        orig_excerpt = r.get("originalExcerpt", "")
+                        if orig_excerpt:
+                            st.text_area(
+                                "Original",
+                                orig_excerpt,
+                                height=200,
+                                disabled=True,
+                                label_visibility="collapsed",
+                                key=f"orig_delta_{r.get('id', idx)}"
+                            )
+                        else:
+                            st.info("No original excerpt")
+                    
+                    with col2:
+                        st.markdown("**✨ Modified Excerpt**")
+                        mod_excerpt = r.get("modifiedExcerpt", "")
+                        if mod_excerpt:
+                            st.text_area(
+                                "Modified",
+                                mod_excerpt,
+                                height=200,
+                                disabled=True,
+                                label_visibility="collapsed",
+                                key=f"mod_delta_{r.get('id', idx)}"
+                            )
+                        else:
+                            st.info("No modified excerpt")
+                    
+                    # Metadata row
+                    meta_col1, meta_col2, meta_col3 = st.columns(3)
+                    with meta_col1:
+                        products = r.get("productMentions", []) or []
+                        if products:
+                            st.markdown(f"**Products:** {', '.join(products)}")
+                        else:
+                            st.markdown("**Products:** None")
+                    with meta_col2:
+                        camera = r.get("cinematographyNotes", []) or []
+                        if camera:
+                            st.markdown(f"**Camera:** {', '.join(camera)}")
+                        else:
+                            st.markdown("**Camera:** None")
+                    with meta_col3:
+                        conf = r.get("confidence", "N/A")
+                        st.markdown(f"**Confidence:** {conf}")
+            
+            # Summary table
+            st.markdown("### 📋 Changes Summary Table")
+            df = pd.DataFrame([{
+                "ID": r.get("id"),
+                "Type": r.get("type"),
+                "Scene": r.get("sceneHint", "")[:50] + "..." if len(r.get("sceneHint", "")) > 50 else r.get("sceneHint", ""),
+                "Products": ", ".join(r.get("productMentions", []) or [])[:50] + "..." if len(", ".join(r.get("productMentions", []) or [])) > 50 else ", ".join(r.get("productMentions", []) or []),
+                "Camera Notes": ", ".join(r.get("cinematographyNotes", []) or [])[:50] + "..." if len(", ".join(r.get("cinematographyNotes", []) or [])) > 50 else ", ".join(r.get("cinematographyNotes", []) or []),
+                "Confidence": r.get("confidence")
+            } for r in rows])
+            st.dataframe(df, use_container_width=True, hide_index=True)
+            
+            # Download JSON
+            st.download_button(
+                "⬇️ Download JSON Changes",
+                data=json.dumps(st.session_state.json_changes, indent=2),
+                file_name="script_changes.json",
+                mime="application/json",
+                use_container_width=True
+            )
         else:
-            st.info("Click the button to generate JSON changes.")
+            st.info("No structured changes found in the comparison.")
 
+    # Optional inline diff view
     st.markdown("---")
-    st.markdown("## 🔍 Comparison Results")
-    
-    if comparison_mode == "Side-by-Side":
-        st.markdown("### Side-by-Side Comparison")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("**Original Script**")
-            st.text_area(
-                "Original",
-                st.session_state.original_script,
-                height=500,
-                disabled=True,
-                key="side_original",
-                label_visibility="collapsed"
-            )
-        
-        with col2:
-            st.markdown("**Modified Script (with Products)**")
-            st.text_area(
-                "Modified",
-                st.session_state.modified_script,
-                height=500,
-                disabled=True,
-                key="side_modified",
-                label_visibility="collapsed"
-            )
-    
-    elif comparison_mode == "Unified Diff":
-        st.markdown("### Unified Diff View")
-        
-        original_lines = st.session_state.original_script.splitlines(keepends=True)
-        modified_lines = st.session_state.modified_script.splitlines(keepends=True)
-        
-        diff = unified_diff(
-            original_lines,
-            modified_lines,
-            fromfile='Original Script',
-            tofile='Modified Script',
-            lineterm=''
-        )
-        
-        diff_text = '\n'.join(diff)
-        
-        st.code(diff_text, language='diff')
-    
-    elif comparison_mode == "Inline Diff":
-        st.markdown("### Inline Diff View")
-        
+    with st.expander("📖 Optional: Full Inline Diff View (Entire Script)", expanded=False):
+        st.markdown("### Full Script Comparison")
         original_lines = st.session_state.original_script.splitlines()
         modified_lines = st.session_state.modified_script.splitlines()
-        
-        # Create HTML diff
         differ = HtmlDiff()
         html_diff = differ.make_file(
             original_lines,
@@ -475,8 +504,6 @@ if st.session_state.compare_ready and st.session_state.original_script and st.se
             context=True,
             numlines=3
         )
-        
-        # Display HTML diff
         st.components.v1.html(html_diff, height=600, scrolling=True)
     
     # Analysis section
@@ -688,13 +715,13 @@ MODIFIED SCRIPT (WITH PRODUCT PLACEMENT):
             mime="text/plain"
         )
 
-else:
-    st.warning("⚠️ Please select or paste both original and modified scripts to compare.")
+elif not (st.session_state.original_script and st.session_state.modified_script):
+    st.warning("⚠️ Please upload or select both original and modified scripts to compare.")
     st.markdown("""
     **To get started:**
-    1. Select or paste an original script in the left column
-    2. Select or paste a modified script (with product placement) in the right column
-    3. The comparison will be displayed automatically
+    1. Upload an original script PDF (or select an existing file) in Step 1
+    2. Generate a modified script in Step 2 or upload/select a modified PDF
+    3. Click "Compare Now" to view the JSON changes and Inline Diff
     """)
 
 # Footer

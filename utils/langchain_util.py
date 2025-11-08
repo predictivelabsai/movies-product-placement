@@ -156,6 +156,13 @@ def compare_scripts_json(original_script: str, modified_script: str, template_te
         # Attempt a simple cleanup (remove trailing prose)
         try:
             cleaned = json_str.strip()
+            # If model returned bare key-value pairs without outer braces, wrap them
+            if cleaned and not cleaned.lstrip().startswith("{") and '"summary"' in cleaned:
+                cleaned = "{\n" + cleaned + "\n}"
+            # Ensure we end at the last closing brace
+            if "}" in cleaned and cleaned.count("{") != cleaned.count("}"):
+                # Trim after the last closing brace
+                cleaned = cleaned[: cleaned.rfind("}") + 1]
             return json.loads(cleaned)
         except Exception as e:
             raise RuntimeError(f"Failed to parse JSON from model output: {e}")

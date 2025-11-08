@@ -1,9 +1,12 @@
 import streamlit as st
 import os
+import sys
 from dotenv import load_dotenv
 from tmdbv3api import TMDb, Person, Movie
-from langchain_openai import ChatOpenAI
 import json
+from utils.ai_casting_util import generate_recommendations, score_actor_for_script
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.pdf_script_extractor import extract_pdf_text
 
 # Load environment variables
 load_dotenv()
@@ -16,7 +19,7 @@ st.set_page_config(
 )
 
 st.title("🎭 AI Casting Match")
-st.markdown("Use TMDB data and AI to identify the most suitable actors for your script.")
+st.markdown("AI-first casting recommendations using your script context, plus TMDB search.")
 
 # Initialize TMDB
 tmdb = TMDb()
@@ -34,56 +37,96 @@ if 'script_genre' not in st.session_state:
 
 # Sidebar
 with st.sidebar:
-    st.markdown("### 🎬 Casting Criteria")
-    
-    genre = st.selectbox(
-        "Genre",
-        ["Action", "Comedy", "Drama", "Thriller", "Romance", "Sci-Fi", "Horror", "Crime", "Children's"],
-        help="Select the movie genre"
+    st.markdown("### 🤖 AI Model")
+    ai_model = st.selectbox(
+        "Choose AI Model",
+        [
+            "Google Gemini 2.0 Flash (Default)",
+            "Google Gemini 2.5 Flash",
+            "OpenAI GPT-4.1 Mini",
+            "OpenAI GPT-4.1 Nano",
+            "XAI Grok 3"
+        ],
+        index=0,
+        help="Model used for AI recommendations and scoring"
     )
-    
-    country = st.selectbox(
-        "Primary Market",
-        ["United States", "United Kingdom", "Canada", "Australia", "France", "Germany", "Spain", "Italy", "Japan", "South Korea", "India", "China"],
-        help="Target market for casting"
-    )
-    
-    age_range = st.select_slider(
-        "Age Range",
-        options=["18-25", "26-35", "36-45", "46-55", "56-65", "65+"],
-        value="26-35"
-    )
-    
-    gender = st.radio(
-        "Gender",
-        ["Any", "Male", "Female", "Non-binary"]
-    )
-    
-    min_popularity = st.slider(
-        "Minimum Popularity Score",
-        min_value=0.0,
-        max_value=100.0,
-        value=10.0,
-        step=5.0,
-        help="TMDB popularity score threshold"
-    )
-    
+    model_mapping = {
+        "Google Gemini 2.0 Flash (Default)": {"provider": "google", "model": "gemini-2.0-flash-exp"},
+        "Google Gemini 2.5 Flash": {"provider": "openai", "model": "gemini-2.5-flash"},
+        "OpenAI GPT-4.1 Mini": {"provider": "openai", "model": "gpt-4.1-mini"},
+        "OpenAI GPT-4.1 Nano": {"provider": "openai", "model": "gpt-4.1-nano"},
+        "XAI Grok 3": {"provider": "xai", "model": "grok-3"}
+    }
+    selected_model = model_mapping[ai_model]
+    st.caption(f"Provider: {selected_model['provider']} | Model: {selected_model['model']}")
     st.markdown("---")
-    st.markdown("### 🎯 AI Matching")
-    
-    use_ai_matching = st.checkbox("Enable AI-Powered Matching", value=True)
-    
-    if use_ai_matching:
-        matching_criteria = st.multiselect(
-            "AI Criteria",
-            ["Genre Fit", "Box Office Track Record", "Social Media Presence", "Award History", "Age Appropriateness"],
-            default=["Genre Fit", "Box Office Track Record"]
-        )
+    st.markdown("### 🧰 Tools Enabled")
+    use_tmdb = st.checkbox("TMDb (filmography & metadata)", value=True)
+    use_omdb = st.checkbox("OMDb (ratings & years)", value=True)
+    use_tavily = st.checkbox("Tavily (web evidence)", value=True)
 
-# Main content
-tab1, tab2, tab3 = st.tabs(["🔍 Search Actors", "🎯 AI Recommendations", "📋 Selected Cast"])
+# Main content (AI Recommendations first)
+tab_ai, tab_search, tab_selected = st.tabs(["🎯 AI Recommendations", "🔍 Actor Search", "📋 Selected Cast"])
 
-with tab1:
+with tab_ai:
+    st.markdown("### Script Context")
+    # Prefer modified script from comparison workflow
+    script_context = ""
+    if st.session_state.get("modified_script"):
+        script_context = st.session_state.modified_script
+        st.success("Using modified script from Script Comparison.")
+    else:
+        # Fallback to selecting from saved scripts or paste
+        # Upload PDF
+        uploaded_pdf = st.file_uploader("Upload script (PDF)", type=["pdf"])
+        if uploaded_pdf is not None:
+            from datetime import datetime
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            pdf_filename = f"scripts/{timestamp}_casting_{uploaded_pdf.name}"
+            with open(pdf_filename, "wb") as f:
+                f.write(uploaded_pdf.getbuffer())
+            with st.spinner("Extracting text from PDF..."):
+                result = extract_pdf_text(pdf_filename)
+            if result.get("success"):
+                script_context = result.get("text", "")
+                st.success(f"Loaded PDF: {uploaded_pdf.name}")
+            else:
+                st.error(f"PDF extraction failed: {result.get('error')}")
+        # Or select existing script files
+        if not script_context and os.path.exists("scripts"):
+            script_files = sorted([f for f in os.listdir("scripts") if f.endswith('.txt') or f.endswith('.pdf')], reverse=True)
+            if script_files:
+                selected_script = st.selectbox("Select existing script", ["None"] + script_files)
+                if selected_script != "None":
+                    path = f"scripts/{selected_script}"
+                    if selected_script.lower().endswith(".pdf"):
+                        with st.spinner("Extracting text from PDF..."):
+                            res = extract_pdf_text(path)
+                        if res.get("success"):
+                            script_context = res.get("text", "")
+                            st.info(f"Loaded: {selected_script}")
+                        else:
+                            st.error(f"Failed to extract: {res.get('error')}")
+                    else:
+                        with open(path, "r") as f:
+                            script_context = f.read()
+                        st.info(f"Loaded: {selected_script}")
+
+    if st.button("🚀 Generate AI Recommendations", type="primary", use_container_width=True, disabled=not bool(script_context.strip())):
+        try:
+            recs = generate_recommendations(
+                script_text=script_context,
+                selected_model=selected_model,
+                temperature=0.4,
+                max_tokens=1200,
+                enabled_tools={"tmdb": use_tmdb, "omdb": use_omdb, "tavily": use_tavily}
+            )
+            st.markdown("### 🎯 AI Recommendations")
+            st.markdown(recs)
+        except Exception as e:
+            st.error(f"Error generating recommendations: {str(e)}")
+
+with tab_search:
     st.markdown("### Search TMDB Database")
     
     col1, col2 = st.columns([3, 1])
@@ -133,13 +176,31 @@ with tab1:
                                         'name': actor.name,
                                         'popularity': actor.popularity,
                                         'profile_path': actor.profile_path,
-                                        'genre': genre
+                                        'genre': None
                                     }
                                     
                                     if actor_data not in st.session_state.selected_actors:
                                         st.session_state.selected_actors.append(actor_data)
                                         st.success(f"Added {actor.name} to cast!")
                                         st.rerun()
+                                
+                                # Score actor vs script
+                                if st.session_state.get("modified_script") or script_context:
+                                    context_text = st.session_state.get("modified_script") or script_context
+                                    if st.button(f"📈 Score vs Script", key=f"score_{actor.id}"):
+                                        try:
+                                            score_res = score_actor_for_script(
+                                                actor_name=actor.name,
+                                                script_text=context_text,
+                                                selected_model=selected_model,
+                                                temperature=0.2,
+                                                max_tokens=600
+                                            )
+                                            st.markdown(f"**Score:** {score_res.get('score', '?')}/100")
+                                            st.markdown("**Why:**")
+                                            st.markdown(score_res.get("analysis", ""))
+                                        except Exception as e:
+                                            st.error(f"Scoring error: {str(e)}")
                 else:
                     st.warning("No results found. Try a different search term.")
         
@@ -172,7 +233,7 @@ with tab1:
                                 'name': actor.name,
                                 'popularity': actor.popularity,
                                 'profile_path': actor.profile_path,
-                                'genre': genre
+                                'genre': None
                             }
                             
                             if actor_data not in st.session_state.selected_actors:
@@ -183,97 +244,7 @@ with tab1:
         except Exception as e:
             st.error(f"Error fetching popular actors: {str(e)}")
 
-with tab2:
-    st.markdown("### 🤖 AI-Powered Actor Recommendations")
-    
-    # Load scripts for context
-    script_context = ""
-    if os.path.exists("scripts"):
-        script_files = sorted([f for f in os.listdir("scripts") if f.endswith('.txt')], reverse=True)
-        
-        if script_files:
-            selected_script = st.selectbox(
-                "Select script for context",
-                ["None"] + script_files
-            )
-            
-            if selected_script != "None":
-                with open(f"scripts/{selected_script}", 'r') as f:
-                    script_context = f.read()[:2000]  # First 2000 chars
-                
-                st.success(f"✅ Using script context: {selected_script}")
-    
-    if st.button("🚀 Generate AI Recommendations", type="primary", use_container_width=True):
-        if not os.getenv("OPENAI_API_KEY"):
-            st.error("❌ OpenAI API key not found.")
-        else:
-            with st.spinner("🤖 AI is analyzing and generating recommendations..."):
-                try:
-                    llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0.7)
-                    
-                    prompt = f"""As a casting director, recommend 5 actors perfect for a {genre} movie targeting {country} market.
-
-Genre: {genre}
-Target Market: {country}
-Age Range: {age_range}
-Gender Preference: {gender}
-
-{f"Script Context: {script_context[:1000]}" if script_context else ""}
-
-For each actor, provide:
-1. Name
-2. Why they're a good fit (2-3 sentences)
-3. Relevant past roles
-4. Estimated popularity score (0-100)
-5. Box office appeal
-
-Format as a numbered list."""
-                    
-                    response = llm.invoke(prompt)
-                    result = response.content
-                    
-                    st.markdown("### 🎯 AI Recommendations")
-                    st.markdown(result)
-                    
-                    # Save recommendations
-                    if st.button("💾 Save Recommendations"):
-                        from datetime import datetime
-                        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                        filename = f"scripts/casting_recommendations_{timestamp}.txt"
-                        
-                        with open(filename, 'w') as f:
-                            f.write(f"CASTING RECOMMENDATIONS\n")
-                            f.write(f"{'='*80}\n")
-                            f.write(f"Genre: {genre}\n")
-                            f.write(f"Market: {country}\n")
-                            f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-                            f.write(f"{'='*80}\n\n")
-                            f.write(result)
-                        
-                        st.success(f"Saved as: {filename}")
-                
-                except Exception as e:
-                    st.error(f"Error generating recommendations: {str(e)}")
-    
-    # Genre-specific insights
-    st.markdown("---")
-    st.markdown("### 📊 Genre Insights")
-    
-    genre_insights = {
-        "Action": "Look for actors with physical presence, martial arts background, or stunt experience. Box office draw is crucial.",
-        "Comedy": "Timing and charisma are key. Consider actors with stand-up or improv backgrounds.",
-        "Drama": "Award-winning or critically acclaimed actors add prestige. Look for emotional range.",
-        "Thriller": "Intensity and ability to convey tension. Previous thriller experience is valuable.",
-        "Romance": "Chemistry is essential. Consider on-screen pairing history.",
-        "Sci-Fi": "Actors comfortable with green screen and technical dialogue. Franchise experience helps.",
-        "Horror": "Ability to convey fear and vulnerability. Scream queens/kings have dedicated fanbases.",
-        "Crime": "Gritty, intense performances. Law enforcement or criminal role experience.",
-        "Children's": "Family-friendly image essential. Voice acting experience valuable."
-    }
-    
-    st.info(f"**{genre} Casting Tips:** {genre_insights.get(genre, 'Consider actors with relevant genre experience.')}")
-
-with tab3:
+with tab_selected:
     st.markdown("### 📋 Selected Cast")
     
     if st.session_state.selected_actors:

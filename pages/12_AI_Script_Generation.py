@@ -111,7 +111,7 @@ with col1:
     # Additional parameters
     with st.expander("⚙️ Advanced Options"):
         temperature = st.slider(
-            "Creativity Level",
+            "Creativity Level (LLM temperature)",
             min_value=0.0,
             max_value=1.0,
             value=0.7,
