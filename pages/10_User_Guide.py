@@ -68,12 +68,13 @@ st.markdown('<h2 class="section-header">📑 Table of Contents</h2>', unsafe_all
 st.markdown("""
 1. [Getting Started](#getting-started)
 2. [AI Script Generation](#ai-script-generation)
-3. [Script Upload & Analysis](#script-upload-analysis)
+3. [Script Analysis](#script-analysis)
 4. [Script Comparison](#script-comparison)
 5. [AI Casting Match](#ai-casting-match)
-6. [Financial Forecasting](#financial-forecasting)
-7. [API Management](#api-management)
-8. [Tips & Best Practices](#tips-best-practices)
+6. [Feature Importance](#feature-importance)
+7. [Prompt Manager](#prompt-manager)
+8. [API Management](#api-management)
+9. [Tips & Best Practices](#tips-best-practices)
 """)
 
 # Getting Started
@@ -173,18 +174,15 @@ screenshot_path = Path("/home/ubuntu/movies-product-placement/screenshots/02_ai_
 if screenshot_path.exists():
     st.image(str(screenshot_path), caption="AI Script Generation Interface", use_container_width=True)
 
-# Script Upload & Analysis
-st.markdown('<h2 class="section-header" id="script-upload-analysis">📤 Script Upload & Analysis</h2>', unsafe_allow_html=True)
+# Script Analysis
+st.markdown('<h2 class="section-header" id="script-analysis">📤 Script Analysis</h2>', unsafe_allow_html=True)
 
 st.markdown("""
-Upload existing scripts for AI-powered analysis to identify product placement opportunities.
+Upload screenplay PDFs for AI-powered analysis to identify product placement opportunities. Choose the LLM provider in the sidebar.
 
 ### Supported Formats
 
-- **TXT**: Plain text files
-- **PDF**: Portable Document Format
-- **DOCX**: Microsoft Word documents
-- **Maximum Size**: 200MB
+- **PDF**: Text-based PDF scripts (image-based PDFs may require OCR)
 
 ### Analysis Features
 
@@ -216,11 +214,11 @@ Upload existing scripts for AI-powered analysis to identify product placement op
 
 ### How to Use
 
-1. Click "Upload Script" and select your file
-2. Wait for automatic text extraction and processing
-3. Review the AI-generated analysis report
-4. Explore identified opportunities by scene
-5. Export the analysis as PDF for sharing
+1. Click "Upload PDF Script" and select your file, or choose from existing scripts
+2. Wait for text extraction and statistics
+3. Select AI model (Gemini, OpenAI, XAI) and run analysis
+4. Review the structured analysis and next steps
+5. Export or save the results
 """)
 
 screenshot_path = Path("/home/ubuntu/movies-product-placement/screenshots/03_script_upload_analysis.webp")
@@ -231,42 +229,25 @@ if screenshot_path.exists():
 st.markdown('<h2 class="section-header" id="script-comparison">🔄 Script Comparison</h2>', unsafe_allow_html=True)
 
 st.markdown("""
-Compare original and modified scripts side-by-side to assess changes and enhancements.
+Three-step workflow to create and review a product-integrated version of your script and assess changes.
 
-### Comparison Modes
+### Steps
 
-1. **Side-by-Side View**
-   - Simultaneous display of both versions
-   - Synchronized scrolling
-   - Line-by-line comparison
+1. **Upload Original**: Load the original script (PDF or paste text)
+2. **Generate Modified**: Use AI to produce a modified script with natural product placements (tunable subtlety, brand/category hints; choose provider/model)
+3. **Compare**: Generate a structured JSON of changes and navigate via an interactive table (scene hints, product mentions, camera notes)
 
-2. **Unified Diff**
-   - Consolidated change tracking
-   - Additions highlighted in green
-   - Deletions highlighted in red
+Legacy visual diff views (Side-by-Side, Unified, Inline) are still available below the JSON changes.
 
-3. **Inline Diff**
-   - Changes shown in context
-   - Maintains narrative flow
-   - Easy to read and understand
+### What You’ll See
 
-### Statistical Analysis
+- **Structured JSON Changes**: IDs, scene hints, product mentions, cinematography notes, confidence
+- **Quick Navigation**: Table-driven selection to preview original vs. modified excerpts
+- **Metrics**: Word/character counts and deltas
 
-The comparison tool automatically calculates:
+### Narrative Report
 
-- **Total Lines**: Original and modified script lengths
-- **Additions**: Number of new lines added
-- **Deletions**: Number of lines removed
-- **Modification Percentage**: Overall change ratio
-- **Narrative Impact Score**: AI assessment of story coherence
-
-### Impact Assessment
-
-AI-powered evaluation includes:
-
-- **Story Coherence**: Does the narrative still make sense?
-- **Character Consistency**: Are characters behaving authentically?
-- **Pacing Rhythm**: Is the story flow maintained?
+Optionally generate a natural-language analysis focused on product placement integration and cinematography, without changing story beats.
 
 ### Export Options
 
@@ -337,65 +318,34 @@ screenshot_path = Path("/home/ubuntu/movies-product-placement/screenshots/05_ai_
 if screenshot_path.exists():
     st.image(str(screenshot_path), caption="AI Casting Match Interface", use_container_width=True)
 
-# Financial Forecasting
-st.markdown('<h2 class="section-header" id="financial-forecasting">💰 Financial Forecasting</h2>', unsafe_allow_html=True)
+# Feature Importance
+st.markdown('<h2 class="section-header" id="feature-importance">📊 Feature Importance</h2>', unsafe_allow_html=True)
 
 st.markdown("""
-Predict revenue potential and ROI using machine learning models trained on historical box office data.
+Analyze real-world drivers of box office performance using data from **TMDb** and **OMDb**.
 
-### Forecast Models
+### Data Fetch
+- Fetch movies via TMDb Discover, filter by year/region/genre
+- Enrich with details, credits, and external IDs
+- Pull Box Office from OMDb (fallback to TMDb revenue when available)
 
-1. **Revenue Forecast**
-   - Estimated box office earnings
-   - Product placement income
-   - Streaming and distribution revenue
-   - **80% Accuracy** based on historical validation
+### Model
+- Train a **RandomForestRegressor** with features like runtime, votes, popularity, budget, year
+- Include categorical encodings for region, language, primary genre, and multi-hot genres
+- Actor/director signals via popularity aggregates
 
-2. **ROI Analysis**
-   - Return on investment percentage
-   - Break-even timeline
-   - Profitability scenarios (best/worst/likely)
-   - Risk-adjusted confidence intervals
+### Outputs
+- **Feature Importances**: Horizontal bar chart (top-K)
+- **Treemap**: Region → Genre → Title aggregation of box office (USD millions)
 
-3. **Market Insights**
-   - Genre performance trends
-   - Product category effectiveness
-   - Regional market analysis
-   - Growth projections
-
-### Forecast Parameters
-
-The AI considers:
-
-- **Genre Performance Patterns**: Historical box office by genre
-- **Production Budget**: Total investment amount
-- **Target Market Demographics**: Audience size and spending
-- **Product Category Multipliers**: Brand placement value
-- **Placement Count**: Number of integration opportunities
-- **Cast Star Power**: Actor popularity impact
-- **Release Timing**: Seasonal and competitive factors
-
-### Scenario Comparison
-
-Compare multiple scenarios:
-
-- **Conservative**: Minimum expected returns
-- **Moderate**: Most likely outcome
-- **Optimistic**: Maximum potential returns
-
-### Visualization
-
-- **Revenue Projections**: Line charts over time
-- **ROI Breakdown**: Pie charts by revenue source
-- **Market Comparison**: Bar charts vs. similar films
-- **Sensitivity Analysis**: Impact of key variables
-
-### Export Options
-
-- **Financial Report PDF**: Complete forecast with charts
-- **Excel Spreadsheet**: Detailed calculations and assumptions
-- **Presentation Slides**: Investor-ready summary
+### How to Use
+1. Configure filters and data sources in the sidebar
+2. Click “Fetch Movies” to build the dataset
+3. Click “Train Model” to compute feature importances
+4. Explore the treemap and top drivers
 """)
+# API Management
+# Tips & Best Practices
 
 screenshot_path = Path("/home/ubuntu/movies-product-placement/screenshots/06_financial_forecasting.webp")
 if screenshot_path.exists():
@@ -553,8 +503,24 @@ This project is licensed under the MIT License. See LICENSE file for details.
 
 ---
 
-**Version**: 1.0.1  
-**Last Updated**: October 31, 2024  
+**Version**: 1.1.0  
+**Last Updated**: November 8, 2025  
 **Platform**: Vadis Media Product Placement AI  
-**AI Model**: GPT-4.1-mini
+**AI Models**: Gemini 2.0 Flash, GPT-4.1-mini, XAI Grok 3
+
+# Prompt Manager
+st.markdown('<h2 class="section-header" id="prompt-manager">🧩 Prompt Manager</h2>', unsafe_allow_html=True)
+st.markdown("""
+Manage the markdown prompt templates used throughout the app.
+
+### Capabilities
+- View and edit `.md` prompt files in `prompts/`
+- Create new templates
+- Migrate old `.txt` prompts to `.md`
+- Rename or delete prompts
+
+### Tips
+- Keep prompts concise and structured
+- Use placeholders like `{original_script}` and `{modified_script}`
+""")
 """)
