@@ -22,10 +22,14 @@ st.markdown("Generate professional script outlines using AI across multiple genr
 os.makedirs("prompts", exist_ok=True)
 os.makedirs("scripts", exist_ok=True)
 
-# Load or create prompt template
-prompt_file = "prompts/script_generation.txt"
-if os.path.exists(prompt_file):
-    with open(prompt_file, 'r') as f:
+# Load or create prompt template (.md preferred, fallback .txt)
+prompt_file_md = "prompts/script_generation.md"
+prompt_file_txt = "prompts/script_generation.txt"
+if os.path.exists(prompt_file_md):
+    with open(prompt_file_md, 'r') as f:
+        default_prompt = f.read()
+elif os.path.exists(prompt_file_txt):
+    with open(prompt_file_txt, 'r') as f:
         default_prompt = f.read()
 else:
     default_prompt = """You are a professional screenwriter. Generate a detailed script outline for a {genre} movie.
@@ -60,7 +64,7 @@ with st.sidebar:
     )
     
     if st.button("💾 Save Template"):
-        with open(prompt_file, 'w') as f:
+        with open(prompt_file_md, 'w') as f:
             f.write(edited_prompt)
         st.success("✅ Template saved successfully!")
     

@@ -2,22 +2,22 @@ import streamlit as st
 import os
 from datetime import datetime
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.pdf_script_extractor import extract_pdf_text
+from utils.langchain_util import analyze_script
 
 # Load environment variables
 load_dotenv()
 
 # Page configuration
 st.set_page_config(
-    page_title="Script Upload & Analysis - Vadis Media",
+    page_title="Script Analysis - Vadis Media",
     page_icon="📤",
     layout="wide"
 )
 
-st.title("📤 Script Upload & Analysis")
+st.title("📤 Script Analysis")
 st.markdown("Upload PDF scripts or analyze existing ones for product placement opportunities using advanced AI.")
 
 # Ensure directories exist
@@ -260,41 +260,20 @@ if st.session_state.analyzed_script:
             st.error("❌ OpenAI API key not found. Please configure your .env file.")
             api_key_missing = True
         elif selected_model["provider"] == "xai" and not os.getenv("XAI_API_KEY"):
-            st.error("❌ XAI API key not found. Please configure your .env file.")
+            st.error("❌ XAI API key not found. Please configure your .venv file.")
             api_key_missing = True
         
         if not api_key_missing:
             with st.spinner(f"🔍 Analyzing script with {ai_model}... This may take a moment due to the comprehensive analysis."):
                 try:
-                    # Initialize LLM based on provider
-                    if selected_model["provider"] == "google":
-                        from langchain_google_genai import ChatGoogleGenerativeAI
-                        llm = ChatGoogleGenerativeAI(
-                            model=selected_model["model"],
-                            google_api_key=os.getenv("GOOGLE_API_KEY"),
-                            temperature=temperature,
-                            max_output_tokens=4000
-                        )
-                    elif selected_model["provider"] == "openai":
-                        llm = ChatOpenAI(
-                            model=selected_model["model"],
-                            api_key=os.getenv("OPENAI_API_KEY"),
-                            temperature=temperature,
-                            max_tokens=4000
-                        )
-                    elif selected_model["provider"] == "xai":
-                        llm = ChatOpenAI(
-                            model=selected_model["model"],
-                            api_key=os.getenv("XAI_API_KEY"),
-                            base_url="https://api.x.ai/v1",
-                            temperature=temperature,
-                            max_tokens=4000
-                        )
-                    
                     # Load standardized analysis template
-                    template_path = "prompts/standardized_analysis_template.txt"
-                    if os.path.exists(template_path):
-                        with open(template_path, 'r') as f:
+                    template_path_md = "prompts/standardized_analysis_template.md"
+                    template_path_txt = "prompts/standardized_analysis_template.txt"
+                    if os.path.exists(template_path_md):
+                        with open(template_path_md, 'r') as f:
+                            analysis_template = f.read()
+                    elif os.path.exists(template_path_txt):
+                        with open(template_path_txt, 'r') as f:
                             analysis_template = f.read()
                     else:
                         # Fallback template if file doesn't exist
@@ -380,31 +359,16 @@ Provide a detailed table with the following columns:
 **Top 3 Opportunities:** [List]
 **Recommended Next Steps:** [List]"""
                     
-                    # Get script title from filename
+                    # Get script title from filename and generate analysis via util
                     script_title = st.session_state.current_script_name.replace('.pdf', '').replace('_', ' ') if st.session_state.current_script_name else "Unknown Script"
-                    
-                    # Create analysis prompt with standardized format
-                    analysis_prompt = f"""{analysis_template.replace('{SCRIPT_TITLE}', script_title)}
-
----
-
-## SCREENPLAY EXCERPT TO ANALYZE:
-
-{st.session_state.analyzed_script[:15000]}
-
----
-
-**IMPORTANT INSTRUCTIONS:**
-- Follow the exact structure provided above
-- Use markdown tables for all structured data
-- Provide specific, actionable recommendations
-- Include real brand names where appropriate
-- Ensure all sections are comprehensive and detailed
-- Focus on data consistency and professional formatting"""
-                    
-                    # Generate analysis
-                    response = llm.invoke(analysis_prompt)
-                    result = response.content
+                    result = analyze_script(
+                        script_title=script_title,
+                        script_content=st.session_state.analyzed_script,
+                        selected_model=selected_model,
+                        temperature=temperature,
+                        max_tokens=4000,
+                        analysis_template=analysis_template
+                    )
                     
                     st.session_state.analysis_result = result
                     st.success("✅ Analysis complete!")
@@ -498,3 +462,5 @@ st.markdown("""
     <small>Powered by Gemini 2.5 Flash | Advanced AI Analysis for Product Placement</small>
 </div>
 """, unsafe_allow_html=True)
+
+
