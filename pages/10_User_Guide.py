@@ -507,6 +507,7 @@ This project is licensed under the MIT License. See LICENSE file for details.
 **Last Updated**: November 8, 2025  
 **Platform**: Movie Analytics Platform  
 **AI Models**: Gemini 2.0 Flash, GPT-4.1-mini, XAI Grok 3
+""")
 
 # Prompt Manager
 st.markdown('<h2 class="section-header" id="prompt-manager">🧩 Prompt Manager</h2>', unsafe_allow_html=True)
@@ -522,5 +523,4 @@ Manage the markdown prompt templates used throughout the app.
 ### Tips
 - Keep prompts concise and structured
 - Use placeholders like `{original_script}` and `{modified_script}`
-""")
 """)
