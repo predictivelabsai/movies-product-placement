@@ -7,33 +7,11 @@ load_dotenv()
 
 # Page configuration
 st.set_page_config(
-    page_title="Vadis Media - Product Placement AI",
+    page_title="Movie Analytics - Product Placement AI",
     page_icon="🎬",
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-# Basic login gate
-if 'authenticated' not in st.session_state:
-    st.session_state.authenticated = False
-
-if not st.session_state.authenticated:
-    st.title("🎬 Vadis Media - Login")
-    st.markdown("### Please sign in to access the platform")
-    
-    with st.form("login_form"):
-        email = st.text_input("Email")
-        password = st.text_input("Password", type="password")
-        submitted = st.form_submit_button("Sign in", use_container_width=True)
-    
-    if submitted:
-        if email.strip().lower() == "ai@vadis-media.com" and password == "movies2025":
-            st.session_state.authenticated = True
-            st.success("✅ Login successful! Redirecting...")
-            st.rerun()
-        else:
-            st.error("❌ Invalid credentials. Please try again.")
-    st.stop()
 
 # Custom CSS
 st.markdown("""
@@ -60,21 +38,20 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Main content
-st.markdown('<h1 class="main-header">🎬 Vadis Media Product Placement AI</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header">🎬 Movie Analytics Platform</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-header">AI-Powered Script Generation, Analysis & Insights Platform</p>', unsafe_allow_html=True)
 
 # Introduction
 st.markdown("""
-Welcome to the **Vadis Media Product Placement AI Platform** - your comprehensive solution for 
+Welcome to the **Movie Analytics Platform** - your comprehensive solution for 
 intelligent script generation, product placement analysis, casting recommendations, and financial forecasting.
 """)
 
 # Company info
-with st.expander("ℹ️ About Vadis Media"):
+with st.expander("ℹ️ About Movie Analytics"):
     st.markdown("""
-    **Vadis Media** is a leading movie production company specializing in innovative content creation 
-    and strategic product placement integration. Visit [vadis-media.com](https://www.vadis-media.com/) 
-    to learn more about our services.
+    **Movie Analytics** is a comprehensive platform for movie production analysis, specializing in innovative content creation 
+    and strategic product placement integration.
     """)
 
 # Features overview
@@ -158,18 +135,13 @@ with st.sidebar:
     
     st.markdown("---")
     st.markdown("### 📞 Support")
-    st.markdown("[Visit Vadis Media](https://www.vadis-media.com/)")
-    
-    # Logout button
-    if st.button("🚪 Logout", use_container_width=True):
-        st.session_state.authenticated = False
-        st.rerun()
+    st.markdown("Movie Analytics Platform")
 
 # Footer
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #666; padding: 2rem 0;">
-    <p>© 2025 Vadis Media. All rights reserved.</p>
+    <p>© 2025 Movie Analytics. All rights reserved.</p>
     <p>Powered by OpenAI, LangChain, and Streamlit</p>
 </div>
 """, unsafe_allow_html=True)

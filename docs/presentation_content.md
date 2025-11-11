@@ -1,12 +1,12 @@
-# Vadis Media Product Placement AI - Presentation
+# Movie Analytics Platform - Presentation
 
 ## Slide 1: Title Slide
-**Title:** Vadis Media Product Placement AI Platform
+**Title:** Movie Analytics Platform Platform
 **Subtitle:** AI-Powered Script Generation & Revenue Forecasting
 **Image:** screenshots/01_home_page.webp
 
 ## Slide 2: Platform Overview
-**Title:** Welcome to Vadis Media Product Placement AI
+**Title:** Welcome to Movie Analytics Platform
 
 **Content:**
 Your comprehensive solution for intelligent script generation, product placement analysis, casting recommendations, and financial forecasting.
@@ -356,9 +356,9 @@ streamlit run Home.py
 ## Slide 19: Contact & Support
 **Title:** Get in Touch
 
-**Vadis Media**
-- **Website:** https://vadis-media.com
-- **Email:** support@vadis-media.com
+**Movie Analytics**
+- **Website:** https://movie-analytics.com
+- **Email:** support@movie-analytics.com
 - **GitHub:** https://github.com/predictivelabsai/movies-product-placement
 
 **Support Channels:**
@@ -368,22 +368,22 @@ streamlit run Home.py
 - Community forum (coming soon)
 
 **Follow Us:**
-- Twitter: @vadismedia
-- LinkedIn: Vadis Media
-- YouTube: Vadis Media Channel
+- Twitter: @movieanalytics
+- LinkedIn: Movie Analytics
+- YouTube: Movie Analytics Channel
 
 ## Slide 20: Thank You
 **Title:** Thank You!
 
-**Vadis Media Product Placement AI**
+**Movie Analytics Platform**
 AI-Powered Script Generation & Revenue Forecasting Platform
 
 **Get Started Today:**
 - Visit: https://github.com/predictivelabsai/movies-product-placement
 - Demo: https://8501-i27c4o9ut17le3l5a6e2c-c34d5eed.manusvm.computer
-- Email: support@vadis-media.com
+- Email: support@movie-analytics.com
 
 **Powered by:**
 OpenAI • LangChain • Streamlit • TMDB • OMDB • Tavily
 
-© 2025 Vadis Media. All rights reserved.
+© 2025 Movie Analytics. All rights reserved.

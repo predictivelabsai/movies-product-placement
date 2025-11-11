@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document summarizes the refactoring improvements made to organize the Vadis Media Product Placement AI Platform codebase for better maintainability and scalability.
+This document summarizes the refactoring improvements made to organize the Movie Analytics Platform codebase for better maintainability and scalability.
 
 ## Changes Made
 
@@ -30,11 +30,11 @@ This document summarizes the refactoring improvements made to organize the Vadis
 ### 2. Database Organization
 
 **Before:**
-- Database file in root directory: `vadis_media.db`
+- Database file in root directory: `movie_analytics.db`
 - No centralized database utilities
 
 **After:**
-- Database moved to dedicated directory: `db/vadis_media.db`
+- Database moved to dedicated directory: `db/movie_analytics.db`
 - Created `utils/db_util.py` with reusable database functions
 - Database files excluded from git via `.gitignore`
 
@@ -96,7 +96,7 @@ movies-product-placement/
 │   └── script_generation.txt
 ├── scripts/                # Generated scripts (gitignored)
 ├── db/                     # ✨ NEW: Database files
-│   └── vadis_media.db     # SQLite database (gitignored)
+│   └── movie_analytics.db     # SQLite database (gitignored)
 ├── sql/                    # Database schema
 │   └── schema.sql
 ├── docs/                   # ✨ NEW: Documentation
@@ -120,7 +120,7 @@ movies-product-placement/
 
 Added project-specific ignores:
 ```gitignore
-# Vadis Media Product Placement - Project specific
+# Movie Analytics Platform - Project specific
 scripts/
 test-results/
 screenshots/
@@ -215,8 +215,8 @@ if success:
 ### For Developers
 
 1. **Database Path Change**
-   - Old: `vadis_media.db`
-   - New: `db/vadis_media.db`
+   - Old: `movie_analytics.db`
+   - New: `db/movie_analytics.db`
    - Update any hardcoded paths
 
 2. **Documentation Location**

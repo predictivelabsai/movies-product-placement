@@ -1,8 +1,8 @@
-# Vadis Media Product Placement AI - Deployment Summary
+# Movie Analytics Product Placement AI - Deployment Summary
 
 ## Project Overview
 
-**Project Name:** Vadis Media Product Placement AI Platform  
+**Project Name:** Movie Analytics Platform  
 **Repository:** https://github.com/predictivelabsai/movies-product-placement  
 **Live Demo:** https://8501-i27c4o9ut17le3l5a6e2c-c34d5eed.manusvm.computer  
 **Date:** October 31, 2025  
@@ -109,7 +109,7 @@ movies-product-placement/
 ├── .env                            # Environment variables (not in repo)
 ├── .env.sample                     # Sample environment file
 ├── .gitignore                      # Git ignore rules
-├── vadis_media.db                  # SQLite database
+├── movie_analytics.db                  # SQLite database
 ├── README.md                       # Project documentation
 ├── USER_GUIDE.md                   # Comprehensive user guide
 └── DEPLOYMENT_SUMMARY.md           # This file
@@ -369,7 +369,7 @@ All Python files include:
 ### Getting Help
 
 - **GitHub Issues:** https://github.com/predictivelabsai/movies-product-placement/issues
-- **Email:** support@vadis-media.com
+- **Email:** support@movie-analytics.com
 - **Documentation:** See USER_GUIDE.md
 
 ### Maintenance Tasks
@@ -449,7 +449,7 @@ All Python files include:
 
 ## License
 
-Copyright © 2025 Vadis Media. All rights reserved.
+Copyright © 2025 Movie Analytics. All rights reserved.
 
 ---
 
@@ -469,9 +469,9 @@ Special thanks to the open-source community for the excellent tools and librarie
 
 ## Contact
 
-**Vadis Media**  
-Website: https://vadis-media.com  
-Email: support@vadis-media.com  
+**Movie Analytics**  
+Website: https://movie-analytics.com  
+Email: support@movie-analytics.com  
 GitHub: https://github.com/predictivelabsai/movies-product-placement
 
 ---

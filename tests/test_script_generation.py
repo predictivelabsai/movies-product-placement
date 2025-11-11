@@ -172,7 +172,7 @@ def test_database_connection():
     try:
         import sqlite3
         
-        db_file = "db/vadis_media.db"
+        db_file = "db/movie_analytics.db"
         
         if not os.path.exists(db_file):
             return {
@@ -223,7 +223,7 @@ def test_database_connection():
 def run_all_tests():
     """Run all script generation tests"""
     print("="*80)
-    print("Vadis Media Product Placement - Script Generation Tests")
+    print("Movie Analytics Platform - Script Generation Tests")
     print("="*80)
     print()
     

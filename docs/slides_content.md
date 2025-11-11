@@ -1,11 +1,11 @@
-# Vadis Media Product Placement AI Platform
+# Movie Analytics Platform
 ## AI-Powered Script Generation & Revenue Forecasting
 
 ---
 
 # AI transforms script development and product placement into a data-driven, efficient process
 
-The entertainment industry faces challenges in script development, product placement identification, casting decisions, and revenue forecasting. Traditional methods are time-consuming, subjective, and lack data-driven insights. Vadis Media Product Placement AI Platform addresses these challenges by integrating artificial intelligence with industry-standard databases to streamline the entire production workflow from script generation to financial forecasting.
+The entertainment industry faces challenges in script development, product placement identification, casting decisions, and revenue forecasting. Traditional methods are time-consuming, subjective, and lack data-driven insights. Movie Analytics Platform addresses these challenges by integrating artificial intelligence with industry-standard databases to streamline the entire production workflow from script generation to financial forecasting.
 
 The platform combines OpenAI's GPT-4 for natural language generation, TMDB's comprehensive actor database, and real-time market data to provide actionable insights. This integration reduces script development time by 60%, improves product placement identification accuracy by 75%, and enhances casting decisions through data-driven recommendations.
 
@@ -183,7 +183,7 @@ Total cost of ownership for small teams ranges from $50-200 monthly covering API
 
 # Multiple support channels ensure users receive timely assistance and comprehensive resources
 
-Contact information includes Vadis Media website at vadis-media.com, support email at support@vadis-media.com, GitHub repository at github.com/predictivelabsai/movies-product-placement, and social media presence on Twitter, LinkedIn, and YouTube (coming soon). These channels provide multiple touchpoints for different communication preferences and urgency levels.
+Contact information includes Movie Analytics website at movie-analytics.com, support email at support@movie-analytics.com, GitHub repository at github.com/predictivelabsai/movies-product-placement, and social media presence on Twitter, LinkedIn, and YouTube (coming soon). These channels provide multiple touchpoints for different communication preferences and urgency levels.
 
 Support services offer GitHub Issues for bug reports with 48-hour response time, email support for general inquiries with 24-hour response time, documentation for self-service troubleshooting available 24/7, and community forum (planned) for peer-to-peer assistance and knowledge sharing. Premium support plans (enterprise) include dedicated account manager, priority response times under 4 hours, phone support during business hours, and custom training sessions.
 
@@ -193,7 +193,7 @@ Partnership opportunities welcome integration developers, content creators, acad
 
 ---
 
-# Vadis Media Product Placement AI transforms entertainment production through intelligent automation
+# Movie Analytics Product Placement AI transforms entertainment production through intelligent automation
 
 The platform represents a paradigm shift in entertainment production workflows, replacing manual, time-consuming processes with AI-driven automation that maintains creative quality while dramatically improving efficiency. By integrating script generation, analysis, casting, and forecasting into a unified system, producers gain comprehensive insights that inform better decisions throughout the production lifecycle.
 

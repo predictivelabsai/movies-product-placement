@@ -1,4 +1,4 @@
-# Vadis Media Product Placement AI - User Guide
+# Movie Analytics Platform - User Guide
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -16,7 +16,7 @@
 
 ## Introduction
 
-Welcome to the **Vadis Media Product Placement AI Platform** - your comprehensive solution for intelligent script generation, product placement analysis, casting recommendations, and financial forecasting.
+Welcome to the **Movie Analytics Platform** - your comprehensive solution for intelligent script generation, product placement analysis, casting recommendations, and financial forecasting.
 
 This platform leverages cutting-edge AI technology to help you:
 - Generate professional script outlines across multiple genres
@@ -452,10 +452,10 @@ Click "🔄 Refresh All Status" to test all API connections at once and update t
 **Problem:** Database-related errors appear
 
 **Solutions:**
-1. Check if `vadis_media.db` exists in the project root
+1. Check if `movie_analytics.db` exists in the project root
 2. Reinitialize the database:
    ```bash
-   sqlite3 vadis_media.db < sql/schema.sql
+   sqlite3 movie_analytics.db < sql/schema.sql
    ```
 
 3. Verify file permissions
@@ -473,7 +473,7 @@ If you encounter issues not covered in this guide:
    - Check `test-results/` for detailed test outputs
 
 3. **Contact Support:**
-   - Email: support@vadis-media.com
+   - Email: support@movie-analytics.com
    - GitHub Issues: [Create an issue](https://github.com/kaljuvee/movies-product-placement/issues)
 
 ---
@@ -550,7 +550,7 @@ If you encounter issues not covered in this guide:
 
 ## License
 
-Copyright © 2025 Vadis Media. All rights reserved.
+Copyright © 2025 Movie Analytics. All rights reserved.
 
 ---
 
@@ -566,4 +566,4 @@ This platform is powered by:
 
 ---
 
-*For more information, visit [vadis-media.com](https://vadis-media.com)*
+*For more information, visit [movie-analytics.com](https://movie-analytics.com)*

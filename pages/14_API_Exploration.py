@@ -15,7 +15,7 @@ load_dotenv()
 
 # Page configuration
 st.set_page_config(
-    page_title="API Exploration - Vadis Media",
+    page_title="API Exploration - Movie Analytics",
     page_icon="🔍",
     layout="wide"
 )

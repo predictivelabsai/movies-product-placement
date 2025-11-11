@@ -1,4 +1,4 @@
--- Vadis Media Product Placement Database Schema
+-- Movie Analytics Platform Database Schema
 
 -- Scripts table
 CREATE TABLE IF NOT EXISTS scripts (

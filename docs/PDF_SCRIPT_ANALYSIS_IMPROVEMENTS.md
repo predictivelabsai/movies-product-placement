@@ -1,7 +1,7 @@
 # PDF Script Analysis Improvements
 
 **Date:** November 7, 2025  
-**Project:** Vadis Media Product Placement AI Platform  
+**Project:** Movie Analytics Platform  
 **Feature:** PDF Script Upload and Analysis
 
 ---
@@ -380,7 +380,7 @@ cat test-results/pdf_script_analysis_tests_*.json
 
 ```
 ================================================================================
-Vadis Media Product Placement - PDF Script Analysis Tests
+Movie Analytics Platform - PDF Script Analysis Tests
 ================================================================================
 Testing PDF extractor initialization...
 Testing PDF text extraction...
@@ -424,7 +424,7 @@ feat: Add PDF script analysis with Gemini 2.5 Flash
 
 ## Conclusion
 
-The PDF Script Analysis improvements represent a significant upgrade to the Vadis Media Product Placement AI Platform:
+The PDF Script Analysis improvements represent a significant upgrade to the Movie Analytics Platform:
 
 ✅ **Professional PDF Support** - Industry-standard screenplay format  
 ✅ **Advanced AI Analysis** - Gemini 2.5 Flash with larger context  

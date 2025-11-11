@@ -13,7 +13,7 @@ load_dotenv()
 
 # Page configuration
 st.set_page_config(
-    page_title="Feature Importance - Vadis Media",
+    page_title="Feature Importance - Movie Analytics",
     page_icon="📊",
     layout="wide"
 )

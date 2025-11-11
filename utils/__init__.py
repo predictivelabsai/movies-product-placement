@@ -1,5 +1,5 @@
 """
-Utilities package for Vadis Media Product Placement Platform
+Utilities package for Movie Analytics Platform
 """
 
 from .pdf_script_extractor import (

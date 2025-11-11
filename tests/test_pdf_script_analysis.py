@@ -226,7 +226,7 @@ Provide a brief analysis (max 200 words)."""
 def run_all_tests():
     """Run all PDF script analysis tests"""
     print("="*80)
-    print("Vadis Media Product Placement - PDF Script Analysis Tests")
+    print("Movie Analytics Platform - PDF Script Analysis Tests")
     print("="*80)
     
     results = []

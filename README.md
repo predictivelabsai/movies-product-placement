@@ -1,8 +1,8 @@
-# Vadis Media Product Placement AI Platform
+# Movie Analytics Platform
 
 ## Overview
 
-The **Vadis Media Product Placement AI Platform** is a comprehensive Streamlit-based application designed to revolutionize the movie production and product placement industry. This platform leverages cutting-edge AI technologies to generate scripts, analyze content, match actors, and forecast financial returns.
+The **Movie Analytics Platform** is a comprehensive Streamlit-based application designed to revolutionize the movie production and product placement industry. This platform leverages cutting-edge AI technologies to generate scripts, analyze content, match actors, and forecast financial returns.
 
 ## Features
 
@@ -88,7 +88,7 @@ movies-product-placement/
 │   └── script_generation.txt
 ├── scripts/                # Generated and uploaded scripts (gitignored)
 ├── db/                     # Database files
-│   └── vadis_media.db     # SQLite database (gitignored)
+│   └── movie_analytics.db     # SQLite database (gitignored)
 ├── sql/                    # Database schema
 │   └── schema.sql
 ├── docs/                   # Documentation
@@ -137,7 +137,7 @@ movies-product-placement/
 4. **Initialize database**
    ```bash
    mkdir -p db
-   sqlite3 db/vadis_media.db < sql/schema.sql
+   sqlite3 db/movie_analytics.db < sql/schema.sql
    ```
 
    Or use the Python utility:
@@ -245,7 +245,7 @@ Edit prompt templates in the `prompts/` directory to customize AI behavior.
    - Ensure internet connectivity
 
 2. **Database Errors**
-   - Reinitialize database: `sqlite3 vadis_media.db < sql/schema.sql`
+   - Reinitialize database: `sqlite3 db/movie_analytics.db < sql/schema.sql`
    - Check file permissions
 
 3. **Module Import Errors**
@@ -263,15 +263,13 @@ Contributions are welcome! Please follow these steps:
 
 ## License
 
-This project is proprietary software owned by Vadis Media.
+This project is proprietary software owned by Movie Analytics.
 
 ## Contact
 
-For questions or support, visit [vadis-media.com](https://www.vadis-media.com/)
+For questions or support, contact the development team.
 
 ## Acknowledgments
-
-- **Vadis Media**: Project sponsor and domain expertise
 - **OpenAI**: AI technology provider
 - **TMDB**: Movie and actor database
 - **Streamlit**: Application framework
@@ -280,4 +278,4 @@ For questions or support, visit [vadis-media.com](https://www.vadis-media.com/)
 
 **Version**: 1.0.0  
 **Last Updated**: October 2025  
-**Maintainer**: Vadis Media Development Team
+**Maintainer**: Movie Analytics Development Team

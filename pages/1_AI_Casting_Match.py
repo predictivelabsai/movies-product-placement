@@ -13,7 +13,7 @@ load_dotenv()
 
 # Page configuration
 st.set_page_config(
-    page_title="AI Casting Match - Vadis Media",
+    page_title="AI Casting Match - Movie Analytics",
     page_icon="🎭",
     layout="wide"
 )

@@ -19,7 +19,7 @@ load_dotenv()
 
 # Page configuration
 st.set_page_config(
-    page_title="Script Comparison - Vadis Media",
+    page_title="Script Comparison - Movie Analytics",
     page_icon="🔄",
     layout="wide"
 )

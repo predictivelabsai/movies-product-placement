@@ -1,5 +1,5 @@
 """
-Test API connections for Vadis Media Product Placement Platform
+Test API connections for Movie Analytics Platform
 """
 
 import os
@@ -181,7 +181,7 @@ def test_tavily_connection():
 def run_all_tests():
     """Run all API connection tests"""
     print("="*80)
-    print("Vadis Media Product Placement - API Connection Tests")
+    print("Movie Analytics Platform - API Connection Tests")
     print("="*80)
     print()
     

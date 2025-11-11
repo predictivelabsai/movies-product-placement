@@ -1,14 +1,14 @@
 # Standardized Analysis Format Documentation
 
 **Date:** November 8, 2025  
-**Project:** Vadis Media Product Placement AI Platform  
+**Project:** Movie Analytics Platform  
 **Version:** 1.0
 
 ---
 
 ## 📋 Overview
 
-This document describes the standardized analysis format implemented across the Vadis Media Product Placement AI Platform. The format ensures consistent, structured output for all script analyses, making data easier to process, compare, and integrate into business workflows.
+This document describes the standardized analysis format implemented across the Movie Analytics Platform. The format ensures consistent, structured output for all script analyses, making data easier to process, compare, and integrate into business workflows.
 
 ---
 

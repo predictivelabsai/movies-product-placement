@@ -1,5 +1,5 @@
 """
-Database utility functions for Vadis Media Product Placement Platform
+Database utility functions for Movie Analytics Platform
 Provides reusable database operations for scripts, actors, placements, and forecasts
 """
 
@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import List, Dict, Optional, Tuple, Any
 
 # Database configuration
-DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'db', 'vadis_media.db')
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'db', 'movie_analytics.db')
 
 
 def get_connection() -> sqlite3.Connection:

@@ -1,7 +1,7 @@
 # Multi-Model AI Support Implementation
 
 **Date:** November 7, 2025  
-**Project:** Vadis Media Product Placement AI Platform  
+**Project:** Movie Analytics Platform  
 **Feature:** Multi-Model AI Selection with Google Gemini, OpenAI GPT-4.1, and XAI Grok 3
 
 ---
